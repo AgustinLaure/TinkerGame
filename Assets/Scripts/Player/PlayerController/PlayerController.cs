@@ -5,10 +5,6 @@ using System;
 
 public class PlayerController : MonoBehaviour
 {
-    private EventBus eventBus;
-    private FSM fsm;
-
-
     [Header("Collision")]
     [SerializeField] private BoxCollider floorDetection;
     [SerializeField] private LayerMask groundLayer;
@@ -16,6 +12,9 @@ public class PlayerController : MonoBehaviour
     [Header("References")]
     [SerializeField] private PlayerHorizontalMovement playerHorizontalMovement;
     [SerializeField] private PlayerJump playerJump;
+
+    private EventBus eventBus;
+    private FSM fsm;
 
     private void Awake()
     {
@@ -79,8 +78,6 @@ public class PlayerController : MonoBehaviour
 
         public override void Update()
         {
-            Debug.Log("no estoy en el aire");
-
             if (playerController.GetIsOnAir())
             {
                 playerController.fsm.TryChange<IdleState>(typeof(OnAirState));
@@ -109,8 +106,6 @@ public class PlayerController : MonoBehaviour
 
         public override void Update()
         {
-            Debug.Log("estoy en el aire");
-
             if (!playerController.GetIsOnAir())
             {
                 playerController.fsm.TryChange<OnAirState>(typeof(IdleState));
