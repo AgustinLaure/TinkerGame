@@ -8,18 +8,18 @@ public class PlayerController : MonoBehaviour
     private EventBus eventBus;
     private FSM fsm;
 
-    private PlayerHorizontalMove playerHorizontalMove;
 
     [Header("Collision")]
     [SerializeField] private BoxCollider floorDetection;
     [SerializeField] private LayerMask groundLayer;
 
+    [Header("References")]
+    [SerializeField] private PlayerHorizontalMovement playerHorizontalMovement;
+    [SerializeField] private PlayerJump playerJump;
 
     private void Awake()
     {
         eventBus = ServiceLocator.Instance.GetService<EventBus>();
-
-        playerHorizontalMove = GetComponent<PlayerHorizontalMove>();
     }
 
     private void Start()
@@ -27,13 +27,14 @@ public class PlayerController : MonoBehaviour
         IdleState idleState = new IdleState(this);
         idleState.actions = new List<MonoBehaviour>()
         {
-            playerHorizontalMove
+            playerHorizontalMovement,
+            playerJump
         };
 
         OnAirState onAirState = new OnAirState(this);
         onAirState.actions = new List<MonoBehaviour>()
         {
-            playerHorizontalMove
+            playerHorizontalMovement
         };
 
         Dictionary<Type, IState> states = new Dictionary<Type, IState>()

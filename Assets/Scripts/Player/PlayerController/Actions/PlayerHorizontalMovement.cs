@@ -1,11 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerHorizontalMove : MonoBehaviour
+public class PlayerHorizontalMovement : MonoBehaviour
 {
     [Header("References")]
-    private PlayerInput playerInput;
-    private Rigidbody rb;
+    [SerializeField] private PlayerInput playerInput;
+    [SerializeField] private Rigidbody rb;
 
     [Header("Movement")]
     [SerializeField] private float acceleration;
@@ -18,8 +18,6 @@ public class PlayerHorizontalMove : MonoBehaviour
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
-        playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions["Move"];
     }
 
