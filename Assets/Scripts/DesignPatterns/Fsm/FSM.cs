@@ -37,11 +37,13 @@ public class FSM
         {
             currentState?.Exit();
 
-            SetActionsState(currentState.actions, false);
+            IState nextState;
 
-            statesDictionary.TryGetValue(toState, out currentState);
+            statesDictionary.TryGetValue(toState, out nextState);
 
-            SetActionsState(currentState.actions, true);
+            SetNonMatchingActionsState(currentState.actions, nextState.actions);
+
+            currentState = nextState;
 
             currentState?.Enter();
         }
@@ -54,6 +56,28 @@ public class FSM
             foreach (MonoBehaviour action in actions)
             {
                 action.enabled = state;
+            }
+        }
+    }
+
+    private void SetNonMatchingActionsState(List<MonoBehaviour> prevActions, List<MonoBehaviour> nextActions)
+    {
+        if (prevActions != null && nextActions != null)
+        {
+            foreach (MonoBehaviour prevAction in prevActions)
+            {
+                if (!nextActions.Contains(prevAction))
+                {
+                    prevAction.enabled = false;
+                }
+            }
+
+            foreach (MonoBehaviour nextAction in nextActions)
+            {
+                if (!prevActions.Contains(nextAction))
+                {
+                    nextAction.enabled = true;
+                }
             }
         }
     }
