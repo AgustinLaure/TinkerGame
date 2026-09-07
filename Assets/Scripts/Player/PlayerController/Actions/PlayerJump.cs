@@ -3,14 +3,14 @@ using UnityEngine.InputSystem;
 
 public class PlayerJump : MonoBehaviour
 {
-    private ForceMode forceMode = ForceMode.Impulse;
-
     [Header("Values")]
     [SerializeField] private float jumpImpulse;
 
     [Header("References")]
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] private Rigidbody rb;
+
+    private ForceMode forceMode = ForceMode.Impulse;
 
     private bool isJumpRequested = false;
 
