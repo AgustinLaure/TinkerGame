@@ -10,6 +10,11 @@ public class PlayerController : MonoBehaviour
 
     private PlayerHorizontalMove playerHorizontalMove;
 
+    [Header("Collision")]
+    [SerializeField] private BoxCollider floorDetection;
+    [SerializeField] private LayerMask groundLayer;
+
+
     private void Awake()
     {
         eventBus = ServiceLocator.Instance.GetService<EventBus>();
@@ -19,13 +24,13 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        IdleState idleState = new IdleState();
+        IdleState idleState = new IdleState(this);
         idleState.actions = new List<MonoBehaviour>()
         {
             playerHorizontalMove
         };
 
-        OnAirState onAirState = new OnAirState();
+        OnAirState onAirState = new OnAirState(this);
         onAirState.actions = new List<MonoBehaviour>()
         {
             playerHorizontalMove
@@ -47,6 +52,11 @@ public class PlayerController : MonoBehaviour
         fsm.Update();
     }
 
+    private bool GetIsOnAir()
+    {
+        return !Physics.CheckBox(floorDetection.bounds.center, floorDetection.bounds.extents, floorDetection.transform.rotation, groundLayer);
+    }
+
     private void OnDestroy()
     {
 
@@ -54,6 +64,13 @@ public class PlayerController : MonoBehaviour
 
     private class IdleState : IState
     {
+        PlayerController playerController;
+
+        public IdleState(PlayerController playerController)
+        {
+            this.playerController = playerController;
+        }
+
         public override void Enter()
         {
 
@@ -61,7 +78,12 @@ public class PlayerController : MonoBehaviour
 
         public override void Update()
         {
+            Debug.Log("no estoy en el aire");
 
+            if (playerController.GetIsOnAir())
+            {
+                playerController.fsm.TryChange<IdleState>(typeof(OnAirState));
+            }
         }
 
         public override void Exit()
@@ -72,6 +94,13 @@ public class PlayerController : MonoBehaviour
 
     private class OnAirState : IState
     {
+        PlayerController playerController;
+
+        public OnAirState(PlayerController playerController)
+        {
+            this.playerController = playerController;
+        }
+
         public override void Enter()
         {
 
@@ -79,7 +108,12 @@ public class PlayerController : MonoBehaviour
 
         public override void Update()
         {
+            Debug.Log("estoy en el aire");
 
+            if (!playerController.GetIsOnAir())
+            {
+                playerController.fsm.TryChange<OnAirState>(typeof(IdleState));
+            }
         }
 
         public override void Exit()

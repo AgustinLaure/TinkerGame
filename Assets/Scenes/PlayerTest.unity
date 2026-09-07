@@ -135,6 +135,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 6182944734772050192, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: floorDetection
+      value: 
+      objectReference: {fileID: 377396756}
+    - target: {fileID: 6182944734772050192, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: groundLayer.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 9016435439561167862, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -180,6 +188,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+--- !u!65 &377396756 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 5046920222045636948, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+  m_PrefabInstance: {fileID: 28621182}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &946590314
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,7 +469,7 @@ GameObject:
   - component: {fileID: 1872230621}
   - component: {fileID: 1872230620}
   - component: {fileID: 1872230619}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
