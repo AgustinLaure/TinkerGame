@@ -1,8 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public interface IState
+public abstract class IState
 {
-    public void Enter();
-    public void Update();
-    public void Exit();
+    public List<MonoBehaviour> actions;
+
+    public abstract void Enter();
+    public abstract void Update();
+    public abstract void Exit();
 }
