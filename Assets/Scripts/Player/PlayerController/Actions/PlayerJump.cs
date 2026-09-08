@@ -15,8 +15,6 @@ public class PlayerJump : MonoBehaviour
 
     private ForceMode forceMode = ForceMode.Impulse;
 
-    private ForceMode forceMode = ForceMode.Impulse;
-
     private bool isJumpRequested = false;
 
     private Vector3 jumpDirection = Vector3.up;
