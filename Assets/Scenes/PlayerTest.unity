@@ -127,57 +127,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1119345959609679080, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-      propertyPath: playerInput
-      value: 
-      objectReference: {fileID: 43977640}
-    - target: {fileID: 3210816018099186070, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.98
-      objectReference: {fileID: 0}
     - target: {fileID: 4453225154132744728, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 5046920222045636948, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-      propertyPath: m_Size.x
-      value: 0.09
-      objectReference: {fileID: 0}
-    - target: {fileID: 5046920222045636948, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-      propertyPath: m_Size.y
-      value: 0.07
-      objectReference: {fileID: 0}
-    - target: {fileID: 5046920222045636948, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-      propertyPath: m_Size.z
-      value: 0.09
-      objectReference: {fileID: 0}
-    - target: {fileID: 5144765716064407186, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-      propertyPath: rb
-      value: 
-      objectReference: {fileID: 43977642}
-    - target: {fileID: 5144765716064407186, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-      propertyPath: playerInput
-      value: 
-      objectReference: {fileID: 43977640}
-    - target: {fileID: 5144765716064407186, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-      propertyPath: legsCollider
-      value: 
-      objectReference: {fileID: 467381695}
-    - target: {fileID: 5144765716064407186, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-      propertyPath: noFrictionMat
-      value: 
-      objectReference: {fileID: 13400000, guid: b7478c44bfc28624ba1f2d7d91181604, type: 2}
-    - target: {fileID: 6182944734772050192, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-      propertyPath: playerJump
-      value: 
-      objectReference: {fileID: 620349687}
-    - target: {fileID: 6182944734772050192, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-      propertyPath: playerHorizontalMovement
-      value: 
-      objectReference: {fileID: 620349686}
-    - target: {fileID: 7414174764866867545, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-      propertyPath: m_NotificationBehavior
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9016435439561167862, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
       propertyPath: m_LocalPosition.x
@@ -224,49 +176,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
---- !u!114 &43977640 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7414174764866867545, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-  m_PrefabInstance: {fileID: 28621182}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
---- !u!54 &43977642 stripped
-Rigidbody:
-  m_CorrespondingSourceObject: {fileID: 273768111006468319, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-  m_PrefabInstance: {fileID: 28621182}
-  m_PrefabAsset: {fileID: 0}
---- !u!136 &467381695 stripped
-CapsuleCollider:
-  m_CorrespondingSourceObject: {fileID: 3630340086014836706, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-  m_PrefabInstance: {fileID: 28621182}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &620349686 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5144765716064407186, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-  m_PrefabInstance: {fileID: 28621182}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8025c4f76fead3745871e4eaf432ae54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerHorizontalMove
---- !u!114 &620349687 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1119345959609679080, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-  m_PrefabInstance: {fileID: 28621182}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2850f5cc4bf793439fa1d2f1492b271, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerJump
 --- !u!1 &858757816
 GameObject:
   m_ObjectHideFlags: 0
