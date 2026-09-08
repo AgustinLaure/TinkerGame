@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class IState
+public abstract class State
 {
     public List<MonoBehaviour> actions;
 

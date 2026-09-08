@@ -4,16 +4,18 @@ using UnityEngine;
 
 public class FSM
 {
-    private IState currentState;
+    private State currentState;
 
-    private Dictionary<Type, IState> statesDictionary = new Dictionary<Type, IState>();
+    private Dictionary<Type, State> statesDictionary = new Dictionary<Type, State>();
 
-    public FSM(Dictionary<Type, IState> states, List<MonoBehaviour> actions)
+    public State GetCurrentState { get { return currentState; } }
+
+    public FSM(Dictionary<Type, State> states, List<MonoBehaviour> actions)
     {
         statesDictionary = states;
     }
 
-    public FSM(Dictionary<Type, IState> states)
+    public FSM(Dictionary<Type, State> states)
     {
         statesDictionary = states;
     }
@@ -31,13 +33,13 @@ public class FSM
         SetActionsState(currentState.actions, true);
 
     }
-    public void TryChange<T>(Type toState) where T : IState
+    public void TryChange<T>(Type toState) where T : State
     {
         if (currentState is T)
         {
             currentState?.Exit();
 
-            IState nextState;
+            State nextState;
 
             statesDictionary.TryGetValue(toState, out nextState);
 

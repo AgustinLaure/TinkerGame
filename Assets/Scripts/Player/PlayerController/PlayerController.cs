@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-
 public class PlayerController : MonoBehaviour
 {
     [Header("Collision")]
@@ -15,6 +14,10 @@ public class PlayerController : MonoBehaviour
 
     private EventBus eventBus;
     private FSM fsm;
+
+    public State GetState { get { return fsm.GetCurrentState; } }
+
+    public bool GetIsOnAirState { get { return fsm.GetCurrentState is OnAirState; } }
 
     private void Awake()
     {
@@ -36,7 +39,7 @@ public class PlayerController : MonoBehaviour
             playerHorizontalMovement
         };
 
-        Dictionary<Type, IState> states = new Dictionary<Type, IState>()
+        Dictionary<Type, State> states = new Dictionary<Type, State>()
         {
             [typeof(IdleState)] = idleState,
             [typeof(OnAirState)] = onAirState
@@ -62,7 +65,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    private class IdleState : IState
+    private class IdleState : State
     {
         PlayerController playerController;
 
@@ -90,7 +93,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private class OnAirState : IState
+    private class OnAirState : State
     {
         PlayerController playerController;
 

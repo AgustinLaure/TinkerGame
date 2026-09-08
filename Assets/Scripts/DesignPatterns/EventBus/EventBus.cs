@@ -60,7 +60,7 @@ public class EventBus
     {
         if (statesToInstance.TryGetValue(typeof(T), out var delegates))
         {
-            if (data.Length <= 0f)
+            if (data.Length <= 0)
             {
                 foreach (Delegate delegatesIter in delegates)
                 {
