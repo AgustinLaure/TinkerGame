@@ -128,6 +128,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 705506690}
+  - component: {fileID: 705506691}
   m_Layer: 0
   m_Name: InputManager
   m_TagString: Untagged
@@ -144,12 +145,26 @@ Transform:
   m_GameObject: {fileID: 705506689}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.21156, y: 0, z: 5.01962}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &705506691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 705506689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ebebe70bdf888b4aa403afc1b295701, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestInput
+  levelData1: {fileID: 11400000, guid: 60b7d1808a121f541943b0938e6d9fcb, type: 2}
+  levelData2: {fileID: 11400000, guid: 19674e3305563d644ba0a7a29c30f195, type: 2}
 --- !u!1 &1089111968
 GameObject:
   m_ObjectHideFlags: 0

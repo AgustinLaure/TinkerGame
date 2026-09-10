@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1deb0597106d07c41b641fb652367002, type: 3}
   m_Name: LevelTwo
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
-  name: Level Two
+  levelName: LevelTwo
   sceneName: LevelTwoTest

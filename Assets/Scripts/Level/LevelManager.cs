@@ -2,13 +2,18 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    GameManager gameManager;
+    void Awake()
+    {
+        gameManager = ServiceLocator.Instance.GetService<GameManager>();
+        gameManager.SetActiveLevelManager(this);
+    }
+
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         
