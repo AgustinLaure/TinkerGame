@@ -57,6 +57,7 @@ public class PlayerAnimator : MonoBehaviour
         JumpState jumpState = new JumpState(this);
 
         FallState fallState = new FallState(this);
+        eventBus.Subscribe<OnPlayerDetectedLand>((Action)fallState.OnLand);
 
         LandState landState = new LandState(this);
 
@@ -84,6 +85,7 @@ public class PlayerAnimator : MonoBehaviour
         AnimatorStateInfo animatorInfo = animator.GetCurrentAnimatorStateInfo(0);
 
         return animatorInfo.normalizedTime >= 1f && animatorInfo.shortNameHash == currentAnimHash;
+        //return animatorInfo.normalizedTime >= 1f;
     }
 
     private class IdleState : State
@@ -130,7 +132,6 @@ public class PlayerAnimator : MonoBehaviour
     private class WalkState : State
     {
         PlayerAnimator playerAnimator;
-        float lastDirection = 0;
         float horizontalInput = 0f;
 
         public WalkState(PlayerAnimator playerAnimator)
@@ -173,12 +174,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public void OnMove(OnPlayerMovedHorizontally data)
         {
-            if (data.direction != lastDirection)
-            {
-                //flip
-            }
 
-            lastDirection = data.direction;
         }
     }
 
@@ -232,8 +228,8 @@ public class PlayerAnimator : MonoBehaviour
     private class FallState : State
     {
         PlayerAnimator playerAnimator;
-        bool isOnAir = false;
-        float horizontalInput = 0f;
+       //bool isOnAir = false;
+       //float horizontalInput = 0f;
 
         public FallState(PlayerAnimator playerAnimator)
         {
@@ -247,18 +243,17 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Update()
         {
-            horizontalInput = playerAnimator.moveAction.ReadValue<Vector2>().x;
-            isOnAir = playerAnimator.playerController.GetIsOnAirState;
-
-            if (!isOnAir)
-            {
-                playerAnimator.fsm.TryChange<FallState>(typeof(LandState));
-            }
+            
         }
 
         public override void Exit()
         {
 
+        }
+
+        public void OnLand()
+        {
+            playerAnimator.fsm.TryChange<FallState>(typeof(LandState));
         }
     }
 
