@@ -1,7 +1,6 @@
-using NUnit.Framework;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 [ExecuteAlways]
 public abstract class LevelBase : MonoBehaviour
@@ -9,6 +8,12 @@ public abstract class LevelBase : MonoBehaviour
     [SerializeField] public List<GameObject> layers = new List<GameObject>();
 
     private void Update()
+    {
+        UpdateLayers();
+    }
+
+    [Conditional("UNITY_EDITOR")]
+    private void UpdateLayers()
     {
         int layersAmount = layers.Count;
 
