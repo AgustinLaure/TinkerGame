@@ -163,6 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ebebe70bdf888b4aa403afc1b295701, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestInput
+  dontDestroyOnLoad: 1
   levelData1: {fileID: 11400000, guid: 60b7d1808a121f541943b0938e6d9fcb, type: 2}
   levelData2: {fileID: 11400000, guid: 19674e3305563d644ba0a7a29c30f195, type: 2}
 --- !u!1 &1089111968
