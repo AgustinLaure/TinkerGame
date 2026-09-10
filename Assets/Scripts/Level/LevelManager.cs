@@ -4,11 +4,14 @@ public class LevelManager : MonoBehaviour
 {
     private GameManager gameManager;
 
+    private EventBus eventBus;
 
     [SerializeField] private GameObject playerSpawnPoint; 
     
     void Awake()
     {
+        eventBus = ServiceLocator.Instance.GetService<EventBus>();
+
         gameManager = ServiceLocator.Instance.GetService<GameManager>();
         gameManager.SetActiveLevelManager(this);
     }
@@ -20,10 +23,10 @@ public class LevelManager : MonoBehaviour
 
     public void OnWin()
     {
-
+        eventBus.Raise<OnWin>();
     }
     public void OnLose()
     {
-
+        eventBus.Raise<OnLose>();
     }
 }

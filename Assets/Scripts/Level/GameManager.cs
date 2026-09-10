@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
     private LevelManager activeLevelManager;
     private LevelData activeLevelData;
 
+
     private void Awake()
     {
         DontDestroyOnLoad(this);
