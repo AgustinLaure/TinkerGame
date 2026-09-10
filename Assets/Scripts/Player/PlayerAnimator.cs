@@ -25,6 +25,9 @@ public class PlayerAnimator : MonoBehaviour
     private int fallAnimHash = 0;
     private readonly string fallStateName = "Fall";
 
+    private int landAnimHash = 0;
+    private readonly string landStateName = "Land";
+
     private const float epsilon = 1e-06f;
 
     private const float fallStateChangeSpeed = 5f;
@@ -34,6 +37,7 @@ public class PlayerAnimator : MonoBehaviour
         animatorStateHash = Animator.StringToHash(animatorStateVarName);
         jumpAnimHash = Animator.StringToHash(jumpStateName);
         fallAnimHash = Animator.StringToHash(fallStateName);
+        landAnimHash = Animator.StringToHash(landStateName);
     }
 
     private void Start()
@@ -53,6 +57,9 @@ public class PlayerAnimator : MonoBehaviour
         JumpState jumpState = new JumpState(this);
 
         FallState fallState = new FallState(this);
+        eventBus.Subscribe<OnPlayerDetectedLand>((Action)fallState.OnLand);
+
+        LandState landState = new LandState(this);
 
         Dictionary<Type, State> states = new Dictionary<Type, State>()
         {
@@ -60,6 +67,7 @@ public class PlayerAnimator : MonoBehaviour
             [typeof(WalkState)] = walkState,
             [typeof(JumpState)] = jumpState,
             [typeof(FallState)] = fallState,
+            [typeof(LandState)] = landState
         };
 
         fsm = new FSM(states);
@@ -77,6 +85,7 @@ public class PlayerAnimator : MonoBehaviour
         AnimatorStateInfo animatorInfo = animator.GetCurrentAnimatorStateInfo(0);
 
         return animatorInfo.normalizedTime >= 1f && animatorInfo.shortNameHash == currentAnimHash;
+        //return animatorInfo.normalizedTime >= 1f;
     }
 
     private class IdleState : State
@@ -123,7 +132,6 @@ public class PlayerAnimator : MonoBehaviour
     private class WalkState : State
     {
         PlayerAnimator playerAnimator;
-        float lastDirection = 0;
         float horizontalInput = 0f;
 
         public WalkState(PlayerAnimator playerAnimator)
@@ -166,12 +174,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public void OnMove(OnPlayerMovedHorizontally data)
         {
-            if (data.direction != lastDirection)
-            {
-                //flip
-            }
 
-            lastDirection = data.direction;
         }
     }
 
@@ -206,12 +209,11 @@ public class PlayerAnimator : MonoBehaviour
                     }
                 }
 
-
                 if (horizontalInput * horizontalInput < epsilon * epsilon)
                 {
                     if (!isOnAir)
                     {
-                        playerAnimator.fsm.TryChange<JumpState>(typeof(IdleState));
+                        playerAnimator.fsm.TryChange<JumpState>(typeof(LandState));
                     }
                 }
             }
@@ -226,8 +228,8 @@ public class PlayerAnimator : MonoBehaviour
     private class FallState : State
     {
         PlayerAnimator playerAnimator;
-        bool isOnAir = false;
-        float horizontalInput = 0f;
+       //bool isOnAir = false;
+       //float horizontalInput = 0f;
 
         public FallState(PlayerAnimator playerAnimator)
         {
@@ -241,14 +243,48 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Update()
         {
-            horizontalInput = playerAnimator.moveAction.ReadValue<Vector2>().x;
-            isOnAir = playerAnimator.playerController.GetIsOnAirState;
+            
+        }
 
-            if (horizontalInput * horizontalInput < epsilon * epsilon)
+        public override void Exit()
+        {
+
+        }
+
+        public void OnLand()
+        {
+            playerAnimator.fsm.TryChange<FallState>(typeof(LandState));
+        }
+    }
+
+    private class LandState : State
+    {
+        PlayerAnimator playerAnimator;
+        float horizontalInput = 0f;
+
+        public LandState(PlayerAnimator playerAnimator)
+        {
+            this.playerAnimator = playerAnimator;
+        }
+
+        public override void Enter()
+        {
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, 4);
+        }
+
+        public override void Update()
+        {
+            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.landAnimHash))
             {
-                if (!isOnAir)
+                horizontalInput = playerAnimator.moveAction.ReadValue<Vector2>().x;
+
+                if (horizontalInput * horizontalInput < epsilon * epsilon)
                 {
-                    playerAnimator.fsm.TryChange<FallState>(typeof(IdleState));
+                    playerAnimator.fsm.TryChange<LandState>(typeof(IdleState));
+                }
+                else
+                {
+                    playerAnimator.fsm.TryChange<LandState>(typeof(WalkState));
                 }
             }
         }
