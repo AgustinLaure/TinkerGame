@@ -5,6 +5,9 @@ using System.Diagnostics;
 [ExecuteAlways]
 public abstract class LevelBase : MonoBehaviour
 {
+    [SerializeField] public string name = new string("Level");
+
+
     [SerializeField] public List<GameObject> layers = new List<GameObject>();
 
     private void Update()

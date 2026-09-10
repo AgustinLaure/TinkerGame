@@ -9,5 +9,6 @@ public static class BootStrapper
     {
         ServiceLocator.Instance.AddService(new CompositePool());
         ServiceLocator.Instance.AddService(new EventBus());
+        ServiceLocator.Instance.AddService(new GameManager());
     }
 }
