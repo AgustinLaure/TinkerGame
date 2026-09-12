@@ -136,6 +136,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4345442012831366607, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: minLinearToWalk
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4345442012831366607, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
       propertyPath: walkToIdleMultiplier
       value: 1
       objectReference: {fileID: 0}

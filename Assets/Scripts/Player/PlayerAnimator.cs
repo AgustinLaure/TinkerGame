@@ -13,6 +13,7 @@ public class PlayerAnimator : MonoBehaviour
     private InputAction moveAction;
 
     [Header("Config")]
+    [SerializeField] private float minLinearToWalk;
     [SerializeField] private float walkToIdleTime;
 
     private float walkBaseMultiplier = 1f;
@@ -289,20 +290,16 @@ public class PlayerAnimator : MonoBehaviour
                 }
             }
 
-            if (horizontalInput * horizontalInput < epsilon * epsilon)
-            {
-                //if (!foo)
-                //{
-                //    playerAnimator.AccelerateCurrentAnimation(playerAnimator.walkToIdleTime);
-                //    foo = true;
-                //}
+            float linearVelocityX = playerAnimator.rb.linearVelocity.x;
 
+            if (horizontalInput * horizontalInput < epsilon * epsilon && linearVelocityX * linearVelocityX < playerAnimator.minLinearToWalk)
+            {
                 playerAnimator.fsm.TryChange<WalkState>(typeof(WalkToIdleState));
 
-                if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.walkAnimHash))
-                {
-
-                }
+              //if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.walkAnimHash))
+              //{
+              //
+              //}
             }
         }
 
