@@ -257,7 +257,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64afa0cef1f85a94f95bc353e92a5272, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AreaTrigger
-  globalEvent: 0
+  triggerEnterEventRaise: {fileID: 0}
+  triggerExitEventRaise: {fileID: 0}
+  passEnterCollisionData: 0
+  passExitCollisionData: 0
 --- !u!1 &858757816
 GameObject:
   m_ObjectHideFlags: 0

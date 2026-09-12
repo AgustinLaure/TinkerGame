@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 public class EventBus
@@ -15,11 +16,17 @@ public class EventBus
     private Dictionary<Type, List<Delegate>> statesToInstance;
     private CompositePool compositePool;
 
+    private MethodInfo baseRaiseMethod;
+
+    public MethodInfo GetBaseRaiseMethod { get { return baseRaiseMethod; } }
+
     public EventBus()
     {
         statesToInstance = new Dictionary<Type, List<Delegate>>();
 
         compositePool = ServiceLocator.Instance.GetService<CompositePool>();
+
+        baseRaiseMethod = this.GetType().GetMethod("Raise");
     }
 
     public void Subscribe<T>(Delegate function) where T : IEvent
@@ -81,6 +88,11 @@ public class EventBus
                 compositePool.ReturnItemFromPool(newEvent);
             }
         }
+    }
+
+    public MethodInfo GetGenericRaiseMethod(Type type)
+    {
+        return baseRaiseMethod.MakeGenericMethod(type);
     }
 
     public void Clear()
