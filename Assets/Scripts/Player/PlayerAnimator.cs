@@ -12,12 +12,20 @@ public class PlayerAnimator : MonoBehaviour
     [SerializeField] private PlayerInput playerInput;
     private InputAction moveAction;
 
+    [Header("Config")]
+    [SerializeField] private float walkToIdleTime;
+
+    private float walkBaseMultiplier = 1f;
+
     private EventBus eventBus;
 
     private FSM fsm;
 
     private int animatorStateHash = 0;
     private readonly string animatorStateVarName = "State";
+
+    private int animSpeedHash = 0;
+    private readonly string animSpeedName = "AnimSpeed";
 
     private int idleToWalkAnimHash = 0;
     private readonly string idleToWalkStateName = "IdleToWalk";
@@ -62,6 +70,7 @@ public class PlayerAnimator : MonoBehaviour
 
     private void Awake()
     {
+        animSpeedHash = Animator.StringToHash(animSpeedName);
         animatorStateHash = Animator.StringToHash(animatorStateVarName);
         idleToWalkAnimHash = Animator.StringToHash(idleToWalkStateName);
         walkAnimHash = Animator.StringToHash(walkStateName);
@@ -131,6 +140,29 @@ public class PlayerAnimator : MonoBehaviour
         AnimatorStateInfo animatorInfo = animator.GetCurrentAnimatorStateInfo(0);
 
         return animatorInfo.normalizedTime >= 1f && animatorInfo.shortNameHash == currentAnimHash;
+    }
+
+    private float GetCurrentAnimatioNNormalizedTime()
+    {
+        return animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+    }
+
+    private float GetCurrentAnimationLength()
+    {
+        return animator.GetCurrentAnimatorClipInfo(0).Length;
+    }
+
+    private void AccelerateCurrentAnimation(float duration)
+    {
+        float animLength = GetCurrentAnimationLength();
+        float currentNormTime = GetCurrentAnimatioNNormalizedTime();
+
+        float remainingTime = animLength - animLength * currentNormTime;
+
+        if (remainingTime > duration)
+        {
+            animator.SetFloat(animSpeedHash, remainingTime * (1f / duration));
+        }
     }
 
     private class IdleState : State
@@ -231,6 +263,7 @@ public class PlayerAnimator : MonoBehaviour
     {
         private PlayerAnimator playerAnimator;
         private float horizontalInput = 0f;
+        private bool foo = false;
 
         public WalkState(PlayerAnimator playerAnimator)
         {
@@ -239,7 +272,9 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Enter()
         {
+            playerAnimator.animator.SetFloat(playerAnimator.animSpeedHash, playerAnimator.walkBaseMultiplier);
             playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)States.Walk);
+            foo = false;
         }
 
         public override void Update()
@@ -256,7 +291,18 @@ public class PlayerAnimator : MonoBehaviour
 
             if (horizontalInput * horizontalInput < epsilon * epsilon)
             {
+                //if (!foo)
+                //{
+                //    playerAnimator.AccelerateCurrentAnimation(playerAnimator.walkToIdleTime);
+                //    foo = true;
+                //}
+
                 playerAnimator.fsm.TryChange<WalkState>(typeof(WalkToIdleState));
+
+                if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.walkAnimHash))
+                {
+
+                }
             }
         }
 

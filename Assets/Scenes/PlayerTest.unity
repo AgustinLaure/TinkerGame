@@ -131,6 +131,14 @@ PrefabInstance:
       propertyPath: triggerEnterEventRaise
       value: 
       objectReference: {fileID: 11500000, guid: 4c3a639f90dfce34f99ad2693b6689f8, type: 3}
+    - target: {fileID: 4345442012831366607, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: walkToIdleTime
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4345442012831366607, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: walkToIdleMultiplier
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4453225154132744728, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
       propertyPath: m_Name
       value: Player
