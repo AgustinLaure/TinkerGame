@@ -14,6 +14,9 @@ public class EventBus
     }
 
     private Dictionary<Type, List<Delegate>> statesToInstance;
+
+    private Dictionary<Type, MethodInfo> genericMethod;
+
     private CompositePool compositePool;
 
     private MethodInfo baseRaiseMethod;
@@ -92,7 +95,16 @@ public class EventBus
 
     public MethodInfo GetGenericRaiseMethod(Type type)
     {
-        return baseRaiseMethod.MakeGenericMethod(type);
+        if (genericMethod.TryGetValue(type, out MethodInfo genericRaise))
+        {
+            return genericRaise;
+        }
+        else
+        {
+            MethodInfo newGenericRaise = baseRaiseMethod.MakeGenericMethod(type);
+            genericMethod.Add(type, newGenericRaise);
+            return newGenericRaise;
+        }
     }
 
     public void Clear()
