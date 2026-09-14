@@ -11,11 +11,11 @@ public class PlayerInventory : MonoBehaviour
     {
         eventBus = ServiceLocator.Instance.GetService<EventBus>();
 
-        eventBus.Subscribe<OnPickUpProp>((Action<OnPickUpProp>)HandleOnPropPickUp);
-        eventBus.Subscribe<OnPickedUpProp>((Action)HandleOnPropPickedUp);
+        eventBus.Subscribe<OnPlayerPickUp>((Action<OnPlayerPickUp>)HandleOnPropPickUp);
+        eventBus.Subscribe<OnPlayerPickUpAnimFinished>((Action)HandleOnPropPickedUp);
     }
 
-    private void HandleOnPropPickUp(OnPickUpProp data)
+    private void HandleOnPropPickUp(OnPlayerPickUp data)
     {
         currentItem = data.prop;
     }

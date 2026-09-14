@@ -27,7 +27,7 @@ public class PlayerPickUp : MonoBehaviour
         {
             Physics.OverlapBoxNonAlloc(pickUpArea.bounds.center, pickUpArea.bounds.extents, propColliders, pickUpArea.transform.rotation, propMask);
 
-            eventBus.Raise<OnPickUpProp>(propColliders[0].GetComponentInParent<Prop>());
+            eventBus.Raise<OnPlayerPickUp>(propColliders[0].GetComponentInParent<Prop>());
         }
     }
 }

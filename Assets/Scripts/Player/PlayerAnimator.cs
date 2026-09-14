@@ -22,41 +22,53 @@ public class PlayerAnimator : MonoBehaviour
 
     private FSM fsm;
 
+    #region HashReferences
+
+    private const string animatorStateVarName = "State";
+    private const string animSpeedName = "AnimSpeed";
+    private const string idleToWalkStateName = "IdleToWalk";
+    private const string walkStateName = "Walk";
+    private const string walkToIdleStateName = "WalkToIdle";
+    private const string jumpStateName = "Jump";
+    private const string fallStateName = "Fall";
+    private const string landStateName = "Land";
+    private const string landToIdleStateName = "LandToIdle";
+    private const string landToWalkStateName = "LandToWalk";
+    private const string pickUpStateName = "PickUp";
+    private const string dropStateName = "Drop";
+    private const string aimStateName = "Aim";
+    private const string throwStateName = "Throw";
+    private const string dropToIdleStateName = "DropToIdle";
+    private const string throwToIdleStateName = "ThrowToIdle";
+
+    private Dictionary<State, int> statesAnimatorHash = new Dictionary<State, int>
+    {
+        [State.IdleToWalk] = Animator.StringToHash(idleToWalkStateName),
+        [State.Walk] = Animator.StringToHash(walkStateName),
+        [State.WalkToIdle] = Animator.StringToHash(walkToIdleStateName),
+        [State.Jump] = Animator.StringToHash(jumpStateName),
+        [State.Fall] = Animator.StringToHash(fallStateName),
+        [State.Land] = Animator.StringToHash(landStateName),
+        [State.LandToIdle] = Animator.StringToHash(landToIdleStateName),
+        [State.LandToWalk] = Animator.StringToHash(landToWalkStateName),
+        [State.PickUp] = Animator.StringToHash(pickUpStateName),
+        [State.Drop] = Animator.StringToHash(dropStateName),
+        [State.DropToIdle] = Animator.StringToHash(dropToIdleStateName),
+        [State.Aim] = Animator.StringToHash(aimStateName),
+        [State.Throw] = Animator.StringToHash(throwStateName),
+        [State.ThrowToIdle] = Animator.StringToHash(throwToIdleStateName),
+    };
+
     private int animatorStateHash = 0;
-    private readonly string animatorStateVarName = "State";
-
     private int animSpeedHash = 0;
-    private readonly string animSpeedName = "AnimSpeed";
 
-    private int idleToWalkAnimHash = 0;
-    private readonly string idleToWalkStateName = "IdleToWalk";
-
-    private int walkAnimHash = 0;
-    private readonly string walkStateName = "Walk";
-
-    private int walkToIdleAnimHash = 0;
-    private readonly string walkToIdleStateName = "WalkToIdle";
-
-    private int jumpAnimHash = 0;
-    private readonly string jumpStateName = "Jump";
-
-    private int fallAnimHash = 0;
-    private readonly string fallStateName = "Fall";
-
-    private int landAnimHash = 0;
-    private readonly string landStateName = "Land";
-
-    private int landToIdleAnimHash = 0;
-    private readonly string landToIdleStateName = "LandToIdle";
-
-    private int landToWalkAnimHash = 0;
-    private readonly string landToWalkStateName = "LandToWalk";
+    #endregion
 
     private const float epsilon = 1e-06f;
 
     private const float fallStateChangeSpeed = 5f;
 
-    private enum States
+    private enum State
     {
         Idle,
         IdleToWalk,
@@ -66,21 +78,20 @@ public class PlayerAnimator : MonoBehaviour
         Fall,
         Land,
         LandToIdle,
-        LandToWalk
+        LandToWalk,
+        PickUp,
+        Drop,
+        DropToIdle,
+        Aim,
+        Aiming,
+        Throw,
+        ThrowToIdle
     }
 
     private void Awake()
     {
-        animSpeedHash = Animator.StringToHash(animSpeedName);
         animatorStateHash = Animator.StringToHash(animatorStateVarName);
-        idleToWalkAnimHash = Animator.StringToHash(idleToWalkStateName);
-        walkAnimHash = Animator.StringToHash(walkStateName);
-        walkToIdleAnimHash = Animator.StringToHash(walkToIdleStateName);
-        jumpAnimHash = Animator.StringToHash(jumpStateName);
-        fallAnimHash = Animator.StringToHash(fallStateName);
-        landAnimHash = Animator.StringToHash(landStateName);
-        landToIdleAnimHash = Animator.StringToHash(landToIdleStateName);
-        landToWalkAnimHash = Animator.StringToHash(landToWalkStateName);
+        animSpeedHash = Animator.StringToHash(animSpeedName);
     }
 
     private void Start()
@@ -92,6 +103,9 @@ public class PlayerAnimator : MonoBehaviour
         IdleState idleState = new IdleState(this);
         eventBus.Subscribe<OnPlayerJump>((Action)idleState.OnJump);
         eventBus.Subscribe<OnPlayerMovedHorizontally>((Action<OnPlayerMovedHorizontally>)idleState.OnMove);
+        eventBus.Subscribe<OnPlayerPickUp>((Action<OnPlayerPickUp>)idleState.OnPickUp);
+        eventBus.Subscribe<OnPlayerDrop>((Action)idleState.OnDrop);
+        eventBus.Subscribe<OnPlayerAim>((Action)idleState.OnAim);
 
         IdleToWalkState idleToWalkState = new IdleToWalkState(this);
         eventBus.Subscribe<OnPlayerJump>((Action)idleToWalkState.OnJump);
@@ -113,7 +127,22 @@ public class PlayerAnimator : MonoBehaviour
 
         LandToWalkState landToWalkState = new LandToWalkState(this);
 
-        Dictionary<Type, State> states = new Dictionary<Type, State>()
+        PickUpState pickUpState = new PickUpState(this);
+
+        DropState dropState = new DropState(this);
+
+        DropToIdleState dropToIdleState = new DropToIdleState(this);
+
+        AimState aimState = new AimState(this);
+
+        AimingState aimingState = new AimingState(this);
+        eventBus.Subscribe<OnPlayerThrow>((Action)aimingState.OnThrow);
+
+        ThrowState throwState = new ThrowState(this);
+
+        ThrowToIdleState throwToIdleState = new ThrowToIdleState(this);
+
+        Dictionary<Type, global::State> states = new Dictionary<Type, global::State>()
         {
             [typeof(IdleState)] = idleState,
             [typeof(IdleToWalkState)] = idleToWalkState,
@@ -123,7 +152,13 @@ public class PlayerAnimator : MonoBehaviour
             [typeof(FallState)] = fallState,
             [typeof(LandState)] = landState,
             [typeof(LandToIdleState)] = landToIdleState,
-            [typeof(LandToWalkState)] = landToWalkState
+            [typeof(LandToWalkState)] = landToWalkState,
+            [typeof(PickUpState)] = pickUpState,
+            [typeof(DropState)] = dropState,
+            [typeof(DropToIdleState)] = dropToIdleState,
+            [typeof(AimState)] = aimState,
+            [typeof(ThrowState)] = throwState,
+            [typeof(ThrowToIdleState)] = throwToIdleState
         };
 
         fsm = new FSM(states);
@@ -166,7 +201,7 @@ public class PlayerAnimator : MonoBehaviour
         }
     }
 
-    private class IdleState : State
+    private class IdleState : global::State
     {
         private PlayerAnimator playerAnimator;
 
@@ -177,7 +212,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Enter()
         {
-            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)States.Idle);
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.Idle);
         }
 
         public override void Update()
@@ -205,9 +240,24 @@ public class PlayerAnimator : MonoBehaviour
         {
             playerAnimator.fsm.TryChange<IdleState>(typeof(IdleToWalkState));
         }
+
+        public void OnPickUp(OnPlayerPickUp data)
+        {
+            playerAnimator.fsm.TryChange<IdleState>(typeof(PickUpState));
+        }
+
+        public void OnDrop()
+        {
+            playerAnimator.fsm.TryChange<IdleState>(typeof(DropState));
+        }
+
+        public void OnAim()
+        {
+            playerAnimator.fsm.TryChange<IdleState>(typeof(AimState));
+        }
     }
 
-    private class IdleToWalkState : State
+    private class IdleToWalkState : global::State
     {
         private PlayerAnimator playerAnimator;
         private float horizontalInput = 0;
@@ -219,7 +269,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Enter()
         {
-            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)States.IdleToWalk);
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.IdleToWalk);
         }
 
         public override void Update()
@@ -234,7 +284,7 @@ public class PlayerAnimator : MonoBehaviour
             }
             else
             {
-                if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.idleToWalkAnimHash))
+                if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.IdleToWalk]))
                 {
                     playerAnimator.fsm.TryChange<IdleToWalkState>(typeof(WalkState));
                 }
@@ -260,7 +310,7 @@ public class PlayerAnimator : MonoBehaviour
         }
     }
 
-    private class WalkState : State
+    private class WalkState : global::State
     {
         private PlayerAnimator playerAnimator;
         private float horizontalInput = 0f;
@@ -274,7 +324,7 @@ public class PlayerAnimator : MonoBehaviour
         public override void Enter()
         {
             playerAnimator.animator.SetFloat(playerAnimator.animSpeedHash, playerAnimator.walkBaseMultiplier);
-            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)States.Walk);
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.Walk);
             foo = false;
         }
 
@@ -295,11 +345,6 @@ public class PlayerAnimator : MonoBehaviour
             if (horizontalInput * horizontalInput < epsilon * epsilon && linearVelocityX * linearVelocityX < playerAnimator.minLinearToWalk)
             {
                 playerAnimator.fsm.TryChange<WalkState>(typeof(WalkToIdleState));
-
-              //if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.walkAnimHash))
-              //{
-              //
-              //}
             }
         }
 
@@ -314,7 +359,7 @@ public class PlayerAnimator : MonoBehaviour
         }
     }
 
-    private class WalkToIdleState : State
+    private class WalkToIdleState : global::State
     {
         private PlayerAnimator playerAnimator;
         private float horizontalInput = 0;
@@ -326,7 +371,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Enter()
         {
-            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)States.WalkToIdle);
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.WalkToIdle);
         }
 
         public override void Update()
@@ -346,7 +391,7 @@ public class PlayerAnimator : MonoBehaviour
                 playerAnimator.fsm.TryChange<WalkToIdleState>(typeof(WalkState));
             }
 
-            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.walkToIdleAnimHash))
+            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.WalkToIdle]))
             {
                 playerAnimator.fsm.TryChange<WalkToIdleState>(typeof(IdleState));
             }
@@ -363,7 +408,7 @@ public class PlayerAnimator : MonoBehaviour
         }
     }
 
-    private class JumpState : State
+    private class JumpState : global::State
     {
         private PlayerAnimator playerAnimator;
         private bool isOnAir = false;
@@ -376,12 +421,12 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Enter()
         {
-            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)States.Jump);
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.Jump);
         }
 
         public override void Update()
         {
-            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.jumpAnimHash))
+            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.Jump]))
             {
                 isOnAir = playerAnimator.playerController.GetIsOnAirState;
                 horizontalInput = playerAnimator.moveAction.ReadValue<Vector2>().x;
@@ -410,7 +455,7 @@ public class PlayerAnimator : MonoBehaviour
         }
     }
 
-    private class FallState : State
+    private class FallState : global::State
     {
         private PlayerAnimator playerAnimator;
 
@@ -422,7 +467,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Enter()
         {
-            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)States.Fall);
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.Fall);
         }
 
         public override void Update()
@@ -441,7 +486,7 @@ public class PlayerAnimator : MonoBehaviour
         }
     }
 
-    private class LandState : State
+    private class LandState : global::State
     {
         private PlayerAnimator playerAnimator;
         private float horizontalInput = 0f;
@@ -453,12 +498,12 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Enter()
         {
-            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)States.Land);
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.Land);
         }
 
         public override void Update()
         {
-            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.landAnimHash))
+            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.Land]))
             {
                 horizontalInput = playerAnimator.moveAction.ReadValue<Vector2>().x;
 
@@ -479,7 +524,7 @@ public class PlayerAnimator : MonoBehaviour
         }
     }
 
-    private class LandToIdleState : State
+    private class LandToIdleState : global::State
     {
         private PlayerAnimator playerAnimator;
 
@@ -490,12 +535,12 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Enter()
         {
-            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)States.LandToIdle);
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.LandToIdle);
         }
 
         public override void Update()
         {
-            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.landToIdleAnimHash))
+            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.LandToIdle]))
             {
                 playerAnimator.fsm.TryChange<LandToIdleState>(typeof(IdleState));
             }
@@ -507,7 +552,7 @@ public class PlayerAnimator : MonoBehaviour
         }
     }
 
-    private class LandToWalkState : State
+    private class LandToWalkState : global::State
     {
         private PlayerAnimator playerAnimator;
 
@@ -518,14 +563,212 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Enter()
         {
-            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)States.LandToWalk);
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.LandToWalk);
         }
 
         public override void Update()
         {
-            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.landToWalkAnimHash))
+            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.LandToWalk]))
             {
                 playerAnimator.fsm.TryChange<LandToWalkState>(typeof(WalkState));
+            }
+        }
+
+        public override void Exit()
+        {
+
+        }
+    }
+
+    private class PickUpState : global::State
+    {
+        private PlayerAnimator playerAnimator;
+
+        public PickUpState(PlayerAnimator playerAnimator)
+        {
+            this.playerAnimator = playerAnimator;
+        }
+
+        public override void Enter()
+        {
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.PickUp);
+        }
+
+        public override void Update()
+        {
+            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.PickUp]))
+            {
+                playerAnimator.fsm.TryChange<PickUpState>(typeof(IdleState));
+            }
+        }
+
+        public override void Exit()
+        {
+            playerAnimator.eventBus.Raise<OnPlayerPickUpAnimFinished>();
+        }
+    }
+
+    private class DropState : global::State
+    {
+        private PlayerAnimator playerAnimator;
+
+        public DropState(PlayerAnimator playerAnimator)
+        {
+            this.playerAnimator = playerAnimator;
+        }
+
+        public override void Enter()
+        {
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.Drop);
+        }
+
+        public override void Update()
+        {
+            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.Drop]))
+            {
+                playerAnimator.fsm.TryChange<DropState>(typeof(DropToIdleState));
+            }
+        }
+
+        public override void Exit()
+        {
+            playerAnimator.eventBus.Raise<OnPlayerDropAnimFinished>();
+        }
+    }
+
+    private class DropToIdleState : global::State
+    {
+        private PlayerAnimator playerAnimator;
+
+        public DropToIdleState(PlayerAnimator playerAnimator)
+        {
+            this.playerAnimator = playerAnimator;
+        }
+
+        public override void Enter()
+        {
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.DropToIdle);
+        }
+
+        public override void Update()
+        {
+            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.DropToIdle]))
+            {
+                playerAnimator.fsm.TryChange<DropToIdleState>(typeof(IdleState));
+            }
+        }
+
+        public override void Exit()
+        {
+            
+        }
+    }
+
+    private class AimState : global::State
+    {
+        private PlayerAnimator playerAnimator;
+
+        public AimState(PlayerAnimator playerAnimator)
+        {
+            this.playerAnimator = playerAnimator;
+        }
+
+        public override void Enter()
+        {
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.Aim);
+        }
+
+        public override void Update()
+        {
+            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.Aim]))
+            {
+                playerAnimator.fsm.TryChange<AimState>(typeof(AimingState));
+            }
+        }
+
+        public override void Exit()
+        {
+
+        }
+    }
+
+    private class AimingState : global::State
+    {
+        private PlayerAnimator playerAnimator;
+
+        public AimingState(PlayerAnimator playerAnimator)
+        {
+            this.playerAnimator = playerAnimator;
+        }
+
+        public override void Enter()
+        {
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.Aiming);
+        }
+
+        public override void Update()
+        {
+
+        }
+
+        public override void Exit()
+        {
+
+        }
+
+        public void OnThrow()
+        {
+            playerAnimator.fsm.TryChange<AimingState>(typeof(ThrowState));
+        }
+    }
+
+    private class ThrowState : global::State
+    {
+        private PlayerAnimator playerAnimator;
+
+        public ThrowState(PlayerAnimator playerAnimator)
+        {
+            this.playerAnimator = playerAnimator;
+        }
+
+        public override void Enter()
+        {
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.Throw);
+        }
+
+        public override void Update()
+        {
+            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.Throw]))
+            {
+                playerAnimator.fsm.TryChange<ThrowState>(typeof(ThrowToIdleState));
+            }
+        }
+
+        public override void Exit()
+        {
+            playerAnimator.eventBus.Raise<OnPlayerThrowAnimFinished>();
+        }
+    }
+
+    private class ThrowToIdleState : global::State
+    {
+        private PlayerAnimator playerAnimator;
+
+        public ThrowToIdleState(PlayerAnimator playerAnimator)
+        {
+            this.playerAnimator = playerAnimator;
+        }
+
+        public override void Enter()
+        {
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.ThrowToIdle);
+        }
+
+        public override void Update()
+        {
+            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.ThrowToIdle]))
+            {
+                playerAnimator.fsm.TryChange<ThrowToIdleState>(typeof(IdleState));
             }
         }
 
