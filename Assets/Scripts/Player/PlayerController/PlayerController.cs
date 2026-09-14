@@ -69,8 +69,8 @@ public class PlayerController : MonoBehaviour
 
         };
 
+        eventBus.Subscribe<OnPlayerDropToIdleAnimFinished>((Action)onActionLockState.OnActionEnded);
         eventBus.Subscribe<OnPlayerPickUpAnimFinished>((Action)onActionLockState.OnActionEnded);
-        eventBus.Subscribe<OnPlayerDropAnimFinished>((Action)onActionLockState.OnActionEnded);
 
         Dictionary<Type, State> states = new Dictionary<Type, State>()
         {

@@ -330,7 +330,6 @@ public class PlayerAnimator : MonoBehaviour
     {
         private PlayerAnimator playerAnimator;
         private float horizontalInput = 0f;
-        private bool foo = false;
 
         public WalkState(PlayerAnimator playerAnimator)
         {
@@ -341,7 +340,6 @@ public class PlayerAnimator : MonoBehaviour
         {
             playerAnimator.animator.SetFloat(playerAnimator.animSpeedHash, playerAnimator.walkBaseMultiplier);
             playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.Walk);
-            foo = false;
         }
 
         public override void Update()
@@ -696,7 +694,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Exit()
         {
-            
+            playerAnimator.eventBus.Raise<OnPlayerDropToIdleAnimFinished>();
         }
     }
 
@@ -783,7 +781,7 @@ public class PlayerAnimator : MonoBehaviour
         public override void Exit()
         {
             playerAnimator.eventBus.Raise<OnPlayerThrowAnimFinished>();
-        }
+        } 
     }
 
     private class ThrowToIdleState : global::State
@@ -810,7 +808,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Exit()
         {
-
+           
         }
     }
 }
