@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerPickUp playerPickUp;
     [SerializeField] private PlayerDrop playerDrop;
     [SerializeField] private PlayerInput playerInput;
+    [SerializeField] private PlayerUseProp playerUseProp;
+    [SerializeField] private PlayerCraft playerCraft;
     private InputAction moveAction;
 
     private const float epsilon = 1e-06f;
@@ -41,11 +43,13 @@ public class PlayerController : MonoBehaviour
             playerHorizontalMovement,
             playerJump,
             playerPickUp,
-            playerDrop
+            playerDrop,
+            playerUseProp
         };
 
         eventBus.Subscribe<OnPlayerPickUp>((Action<OnPlayerPickUp>)idleState.OnPickUp);
         eventBus.Subscribe<OnPlayerDrop>((Action)idleState.OnDrop);
+        eventBus.Subscribe<OnPlayerToggleCraft>((Action<OnPlayerToggleCraft>)idleState.OnCraft);
 
         MoveState moveState = new MoveState(this);
         moveState.actions = new List<MonoBehaviour>()
@@ -63,21 +67,30 @@ public class PlayerController : MonoBehaviour
             playerHorizontalMovement
         };
 
-        OnActionLock onActionLockState = new OnActionLock(this);
-        onActionLockState.actions = new List<MonoBehaviour>()
+        ActionLockState actionLockState = new ActionLockState(this);
+        actionLockState.actions = new List<MonoBehaviour>()
         {
 
         };
 
-        eventBus.Subscribe<OnPlayerDropToIdleAnimFinished>((Action)onActionLockState.OnActionEnded);
-        eventBus.Subscribe<OnPlayerPickUpAnimFinished>((Action)onActionLockState.OnActionEnded);
+        eventBus.Subscribe<OnPlayerDropToIdleAnimFinished>((Action)actionLockState.OnDropFinished);
+        eventBus.Subscribe<OnPlayerPickUpAnimFinished>((Action)actionLockState.OnPickUpFinished);
+
+        CraftState craftState = new CraftState(this);
+        craftState.actions = new List<MonoBehaviour>()
+        {
+            playerCraft
+        };
+
+        eventBus.Subscribe<OnPlayerToggleCraft>((Action<OnPlayerToggleCraft>)craftState.OnStopCrafting);
 
         Dictionary<Type, State> states = new Dictionary<Type, State>()
         {
             [typeof(IdleState)] = idleState,
             [typeof(MoveState)] = moveState,
             [typeof(OnAirState)] = onAirState,
-            [typeof(OnActionLock)] = onActionLockState
+            [typeof(ActionLockState)] = actionLockState,
+            [typeof(CraftState)] = craftState
         };
 
         fsm = new FSM(states);
@@ -137,12 +150,20 @@ public class PlayerController : MonoBehaviour
 
         public void OnPickUp(OnPlayerPickUp data)
         {
-            playerController.fsm.TryChange<IdleState>(typeof(OnActionLock));
+            playerController.fsm.TryChange<IdleState>(typeof(ActionLockState));
         }
 
         public void OnDrop()
         {
-            playerController.fsm.TryChange<IdleState>(typeof(OnActionLock));
+            playerController.fsm.TryChange<IdleState>(typeof(ActionLockState));
+        }
+
+        public void OnCraft(OnPlayerToggleCraft data)
+        {
+            if (data.isCrafting)
+            {
+                playerController.fsm.TryChange<IdleState>(typeof(CraftState));
+            }
         }
     }
 
@@ -183,12 +204,12 @@ public class PlayerController : MonoBehaviour
 
         public void OnPickUp(OnPlayerPickUp data)
         {
-            playerController.fsm.TryChange<MoveState>(typeof(OnActionLock));
+            playerController.fsm.TryChange<MoveState>(typeof(ActionLockState));
         }
 
         public void OnDrop()
         {
-            playerController.fsm.TryChange<MoveState>(typeof(OnActionLock));
+            playerController.fsm.TryChange<MoveState>(typeof(ActionLockState));
         }
     }
 
@@ -220,11 +241,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private class OnActionLock : State
+    private class ActionLockState : State
     {
         private PlayerController playerController;
 
-        public OnActionLock(PlayerController playerController)
+        public ActionLockState(PlayerController playerController)
         {
             this.playerController = playerController;
         }
@@ -238,7 +259,7 @@ public class PlayerController : MonoBehaviour
         {
             if (playerController.GetIsOnAir())
             {
-                playerController.fsm.TryChange<OnActionLock>(typeof(OnAirState));
+                playerController.fsm.TryChange<ActionLockState>(typeof(OnAirState));
             }
         }
 
@@ -247,9 +268,49 @@ public class PlayerController : MonoBehaviour
 
         }
 
-        public void OnActionEnded()
+        public void OnPickUpFinished()
         {
-            playerController.fsm.TryChange<OnActionLock>(typeof(IdleState));
+            playerController.fsm.TryChange<ActionLockState>(typeof(IdleState));
+        }
+
+        public void OnDropFinished()
+        {
+            playerController.fsm.TryChange<ActionLockState>(typeof(IdleState));
+        }
+    }
+
+    private class CraftState : State
+    {
+        private PlayerController playerController;
+
+        public CraftState(PlayerController playerController)
+        {
+            this.playerController = playerController;
+        }
+
+        public override void Enter()
+        {
+
+        }
+
+        public override void Update()
+        {
+            if (playerController.GetIsOnAir())
+            {
+                playerController.fsm.TryChange<IdleState>(typeof(OnAirState));
+            }
+        }
+
+        public override void Exit()
+        {
+
+        }
+        public void OnStopCrafting(OnPlayerToggleCraft data)
+        {
+            if (!data.isCrafting)
+            {
+                playerController.fsm.TryChange<CraftState>(typeof(IdleState));
+            }
         }
     }
 }
