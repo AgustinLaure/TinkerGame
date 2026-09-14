@@ -2,6 +2,6 @@ using UnityEngine;
 
 public interface IPickable
 {
-    public void SetLogic(bool state);
-    public void SetHighlight(bool state);
+    public void EnableLogic();
+    public void DisableLogic();
 }

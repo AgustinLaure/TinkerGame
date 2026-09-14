@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [Header("References")]
     [SerializeField] private PlayerHorizontalMovement playerHorizontalMovement;
     [SerializeField] private PlayerJump playerJump;
+    [SerializeField] private PlayerPickUp playerPickUp;
 
     private EventBus eventBus;
     private FSM fsm;
@@ -30,7 +31,8 @@ public class PlayerController : MonoBehaviour
         idleState.actions = new List<MonoBehaviour>()
         {
             playerHorizontalMovement,
-            playerJump
+            playerJump,
+            playerPickUp
         };
 
         OnAirState onAirState = new OnAirState(this);
