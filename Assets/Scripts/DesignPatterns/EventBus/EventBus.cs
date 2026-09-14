@@ -26,6 +26,7 @@ public class EventBus
     public EventBus()
     {
         statesToInstance = new Dictionary<Type, List<Delegate>>();
+        genericMethod = new Dictionary<Type, MethodInfo>();
 
         compositePool = ServiceLocator.Instance.GetService<CompositePool>();
 
