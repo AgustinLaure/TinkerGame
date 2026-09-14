@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class RockProp : Prop
 {
+    [Header("References")]
+    [SerializeField] private GameObject rendererObject;
+    [SerializeField] private GameObject colliderObject;
+
     private Rigidbody rb;
 
     private void Awake()
@@ -9,13 +13,17 @@ public class RockProp : Prop
         rb = GetComponent<Rigidbody>();
     }
 
-    public override void EnableLogic()
+    public override void Enable()
     {
         EnableRigidBody(rb);
+        rendererObject.SetActive(true);
+        colliderObject.SetActive(true);
     }
 
-    public override void DisableLogic()
+    public override void Disable()
     {
         DisableRigidbody(rb);
+        rendererObject.SetActive(false);
+        colliderObject.SetActive(false);
     }
 }

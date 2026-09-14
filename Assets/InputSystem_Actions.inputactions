@@ -480,7 +480,7 @@
                 {
                     "name": "",
                     "id": "ab758994-6a7f-43ad-8702-e6a9280cbf90",
-                    "path": "<Mouse>/rightButton",
+                    "path": "<Keyboard>/#(X)",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",

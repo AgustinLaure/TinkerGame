@@ -9,6 +9,6 @@ public class OnPlayerDrop : IEvent
     }
     public void Reset()
     {
-       
+        
     }
 }

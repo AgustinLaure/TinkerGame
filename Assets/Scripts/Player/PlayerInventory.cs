@@ -22,6 +22,6 @@ public class PlayerInventory : MonoBehaviour
 
     private void HandleOnPropPickedUp()
     {
-
+        currentItem.Disable();
     }
 }

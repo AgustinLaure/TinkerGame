@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class PlayerHorizontalMovement : MonoBehaviour
 {
     [Header("References")]
+    [SerializeField] private Transform baseTransform;
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private CapsuleCollider legsCollider;
@@ -21,6 +22,9 @@ public class PlayerHorizontalMovement : MonoBehaviour
     private InputAction moveAction;
 
     private PhysicsMaterial originalLegsColliderMat;
+
+    private readonly Quaternion facingLeftRotation = Quaternion.Euler(0f,0,0f);
+    private readonly Quaternion facingRightRotation = Quaternion.Euler(0f,180f,0f);
 
     private void Awake()
     {
@@ -75,11 +79,11 @@ public class PlayerHorizontalMovement : MonoBehaviour
 
         if (horizontalInput > 0)
         {
-            spriteRenderer.flipX = false;
+            baseTransform.rotation = facingLeftRotation;
         }
         else if (horizontalInput < 0)
         {
-            spriteRenderer.flipX = true;
+            baseTransform.rotation = facingRightRotation;
         }
     }
 
