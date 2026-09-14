@@ -13,9 +13,9 @@ public abstract class Prop : MonoBehaviour, IPickable
 
     }
 
-    public abstract void EnableLogic();
+    public abstract void Enable();
 
-    public abstract void DisableLogic();
+    public abstract void Disable();
 
     public void SetHighlight(bool state)
     {

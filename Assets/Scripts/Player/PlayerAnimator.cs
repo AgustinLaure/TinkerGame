@@ -109,12 +109,18 @@ public class PlayerAnimator : MonoBehaviour
 
         IdleToWalkState idleToWalkState = new IdleToWalkState(this);
         eventBus.Subscribe<OnPlayerJump>((Action)idleToWalkState.OnJump);
+        eventBus.Subscribe<OnPlayerPickUp>((Action<OnPlayerPickUp>)idleToWalkState.OnPickUp);
+        eventBus.Subscribe<OnPlayerDrop>((Action)idleToWalkState.OnDrop);
 
         WalkState walkState = new WalkState(this);
         eventBus.Subscribe<OnPlayerJump>((Action)walkState.OnJump);
+        eventBus.Subscribe<OnPlayerPickUp>((Action<OnPlayerPickUp>)walkState.OnPickUp);
+        eventBus.Subscribe<OnPlayerDrop>((Action)walkState.OnDrop);
 
         WalkToIdleState walkToIdleState = new WalkToIdleState(this);
         eventBus.Subscribe<OnPlayerJump>((Action)walkToIdleState.OnJump);
+        eventBus.Subscribe<OnPlayerPickUp>((Action<OnPlayerPickUp>)walkToIdleState.OnPickUp);
+        eventBus.Subscribe<OnPlayerDrop>((Action)walkToIdleState.OnDrop);
 
         JumpState jumpState = new JumpState(this);
 
@@ -308,13 +314,22 @@ public class PlayerAnimator : MonoBehaviour
         {
             playerAnimator.fsm.TryChange<IdleToWalkState>(typeof(JumpState));
         }
+
+        public void OnPickUp(OnPlayerPickUp data)
+        {
+            playerAnimator.fsm.TryChange<IdleToWalkState>(typeof(PickUpState));
+        }
+
+        public void OnDrop()
+        {
+            playerAnimator.fsm.TryChange<IdleToWalkState>(typeof(DropState));
+        }
     }
 
     private class WalkState : global::State
     {
         private PlayerAnimator playerAnimator;
         private float horizontalInput = 0f;
-        private bool foo = false;
 
         public WalkState(PlayerAnimator playerAnimator)
         {
@@ -325,7 +340,6 @@ public class PlayerAnimator : MonoBehaviour
         {
             playerAnimator.animator.SetFloat(playerAnimator.animSpeedHash, playerAnimator.walkBaseMultiplier);
             playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.Walk);
-            foo = false;
         }
 
         public override void Update()
@@ -356,6 +370,16 @@ public class PlayerAnimator : MonoBehaviour
         public void OnJump()
         {
             playerAnimator.fsm.TryChange<WalkState>(typeof(JumpState));
+        }
+
+        public void OnPickUp(OnPlayerPickUp data)
+        {
+            playerAnimator.fsm.TryChange<WalkState>(typeof(PickUpState));
+        }
+
+        public void OnDrop()
+        {
+            playerAnimator.fsm.TryChange<WalkState>(typeof(DropState));
         }
     }
 
@@ -405,6 +429,16 @@ public class PlayerAnimator : MonoBehaviour
         public void OnJump()
         {
             playerAnimator.fsm.TryChange<WalkToIdleState>(typeof(JumpState));
+        }
+
+        public void OnPickUp(OnPlayerPickUp data)
+        {
+            playerAnimator.fsm.TryChange<WalkToIdleState>(typeof(PickUpState));
+        }
+
+        public void OnDrop()
+        {
+            playerAnimator.fsm.TryChange<WalkToIdleState>(typeof(DropState));
         }
     }
 
@@ -660,7 +694,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Exit()
         {
-            
+            playerAnimator.eventBus.Raise<OnPlayerDropToIdleAnimFinished>();
         }
     }
 
@@ -747,7 +781,7 @@ public class PlayerAnimator : MonoBehaviour
         public override void Exit()
         {
             playerAnimator.eventBus.Raise<OnPlayerThrowAnimFinished>();
-        }
+        } 
     }
 
     private class ThrowToIdleState : global::State
@@ -774,7 +808,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Exit()
         {
-
+           
         }
     }
 }

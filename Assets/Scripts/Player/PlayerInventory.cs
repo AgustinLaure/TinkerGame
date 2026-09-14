@@ -5,7 +5,9 @@ public class PlayerInventory : MonoBehaviour
 {
     private EventBus eventBus;
 
-    private Prop currentItem = null;
+    private Prop currentProp = null;
+
+    public Prop GetCurrentProp { get { return currentProp; } }
 
     private void Start()
     {
@@ -17,11 +19,11 @@ public class PlayerInventory : MonoBehaviour
 
     private void HandleOnPropPickUp(OnPlayerPickUp data)
     {
-        currentItem = data.prop;
+        currentProp = data.prop;
     }
 
     private void HandleOnPropPickedUp()
     {
-
+        currentProp.Disable();
     }
 }

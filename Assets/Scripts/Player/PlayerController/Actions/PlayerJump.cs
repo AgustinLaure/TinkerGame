@@ -48,7 +48,7 @@ public class PlayerJump : MonoBehaviour
 
     private void OnJump(InputValue value)
     {
-        if (jumpCoroutine == null)
+        if (jumpCoroutine == null && enabled == true)
         {
             jumpCoroutine = StartCoroutine(JumpCoroutine());
         }

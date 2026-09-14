@@ -1,7 +1,6 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class OnPlayerDrop : IEvent
+public class OnPlayerDropToIdleAnimFinished : IEvent
 {
     public void Set(params object[] data)
     {
@@ -9,6 +8,6 @@ public class OnPlayerDrop : IEvent
     }
     public void Reset()
     {
-        
+
     }
 }
