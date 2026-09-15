@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
 
     [Header("References")]
+    [SerializeField] private Rigidbody rb;
+    [SerializeField] private Transform pivot;
     [SerializeField] private PlayerHorizontalMovement playerHorizontalMovement;
     [SerializeField] private PlayerJump playerJump;
     [SerializeField] private PlayerPickUp playerPickUp;
@@ -19,7 +21,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerCraft playerCraft;
     private InputAction moveAction;
 
-    private const float epsilon = 1e-06f;
+    private const float epsilon = 1e-05f;
 
     private EventBus eventBus;
     private FSM fsm;
@@ -35,6 +37,8 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        eventBus.Subscribe<OnRotatePlayer>((Action<OnRotatePlayer>)HandlePlayerRotate);
+
         moveAction = playerInput.actions["Move"];
 
         IdleState idleState = new IdleState(this);
@@ -44,12 +48,14 @@ public class PlayerController : MonoBehaviour
             playerJump,
             playerPickUp,
             playerDrop,
-            playerUseProp
+            playerUseProp,
+            playerCraft
         };
 
         eventBus.Subscribe<OnPlayerPickUp>((Action<OnPlayerPickUp>)idleState.OnPickUp);
         eventBus.Subscribe<OnPlayerDrop>((Action)idleState.OnDrop);
         eventBus.Subscribe<OnPlayerToggleCraft>((Action<OnPlayerToggleCraft>)idleState.OnCraft);
+        eventBus.Subscribe<OnPlayerAim>((Action)idleState.OnAircraftAim);
 
         MoveState moveState = new MoveState(this);
         moveState.actions = new List<MonoBehaviour>()
@@ -85,13 +91,22 @@ public class PlayerController : MonoBehaviour
         eventBus.Subscribe<OnPlayerToggleCraft>((Action<OnPlayerToggleCraft>)craftState.OnStopCrafting);
         eventBus.Subscribe<OnPlayerCraftedOrigami>((Action<OnPlayerCraftedOrigami>)craftState.OnCrafted);
 
+        AimState aimState = new AimState(this);
+        aimState.actions = new List<MonoBehaviour>()
+        {
+            playerUseProp
+        };
+
+        eventBus.Subscribe<OnAircraftLaunched>((Action)aimState.OnAircraftLaunch);
+
         Dictionary<Type, State> states = new Dictionary<Type, State>()
         {
             [typeof(IdleState)] = idleState,
             [typeof(MoveState)] = moveState,
             [typeof(OnAirState)] = onAirState,
             [typeof(ActionLockState)] = actionLockState,
-            [typeof(CraftState)] = craftState
+            [typeof(CraftState)] = craftState,
+            [typeof(AimState)] = aimState
         };
 
         fsm = new FSM(states);
@@ -99,9 +114,15 @@ public class PlayerController : MonoBehaviour
         fsm.SetInitialState(typeof(IdleState));
     }
 
+
     private void Update()
     {
         fsm.Update();
+    }
+
+    private void HandlePlayerRotate(OnRotatePlayer data)
+    {
+        pivot.rotation = data.rotation;
     }
 
     private bool GetIsOnAir()
@@ -166,6 +187,11 @@ public class PlayerController : MonoBehaviour
                 playerController.fsm.TryChange<IdleState>(typeof(CraftState));
             }
         }
+
+        public void OnAircraftAim()
+        {
+            playerController.fsm.TryChange<IdleState>(typeof(AimState));
+        }
     }
 
     private class MoveState : State
@@ -192,7 +218,7 @@ public class PlayerController : MonoBehaviour
 
             horizontalInput = playerController.moveAction.ReadValue<Vector2>().x;
 
-            if (horizontalInput * horizontalInput < epsilon * epsilon)
+            if (horizontalInput * horizontalInput < epsilon * epsilon && Mathf.Abs(playerController.rb.linearVelocity.x) < epsilon && Mathf.Abs(playerController.rb.linearVelocity.y) < epsilon)
             {
                 playerController.fsm.TryChange<MoveState>(typeof(IdleState));
             }
@@ -317,6 +343,39 @@ public class PlayerController : MonoBehaviour
         public void OnCrafted(OnPlayerCraftedOrigami data)
         {
             playerController.fsm.TryChange<CraftState>(typeof(IdleState));
+        }
+    }
+
+    private class AimState : State
+    {
+        private PlayerController playerController;
+
+        public AimState(PlayerController playerController)
+        {
+            this.playerController = playerController;
+        }
+
+        public override void Enter()
+        {
+
+        }
+
+        public override void Update()
+        {
+            if (playerController.GetIsOnAir())
+            {
+                playerController.fsm.TryChange<AimState>(typeof(OnAirState));
+            }
+        }
+
+        public override void Exit()
+        {
+
+        }
+
+        public void OnAircraftLaunch()
+        {
+            playerController.fsm.TryChange<AimState>(typeof(IdleState));
         }
     }
 }

@@ -8,9 +8,9 @@ public class AreaCollider : MonoBehaviour
     public event Action<Collision> OnColliderEntered;
     public event Action<Collision> OnColliderExited;
 
-    [Header("References")]
-    [SerializeField] private MonoScript colliderEnterEventRaise;
-    [SerializeField] private MonoScript colliderExitEventRaise;
+    [Header("Event Type Names")]
+    [SerializeField] private string colliderEnterEventTypeName;
+    [SerializeField] private string colliderExitEventTypeName;
 
     [Header("Configuration")]
     [SerializeField] private bool passEnterCollisionData;
@@ -24,13 +24,14 @@ public class AreaCollider : MonoBehaviour
     {
         eventBus = ServiceLocator.Instance.GetService<EventBus>();
 
-        if (colliderEnterEventRaise != null)
+        if (!string.IsNullOrEmpty(colliderEnterEventTypeName))
         {
-            genericTriggerEnterRaise = eventBus.GetGenericRaiseMethod(colliderEnterEventRaise.GetClass());
+            genericTriggerEnterRaise = eventBus.GetGenericRaiseMethod(Type.GetType(colliderEnterEventTypeName));
         }
-        if (colliderExitEventRaise != null)
+
+        if (!string.IsNullOrEmpty(colliderExitEventTypeName))
         {
-            genericTriggerExitRaise = eventBus.GetGenericRaiseMethod(colliderExitEventRaise.GetClass());
+            genericTriggerExitRaise = eventBus.GetGenericRaiseMethod(Type.GetType(colliderExitEventTypeName));
         }
     }
 
@@ -38,16 +39,13 @@ public class AreaCollider : MonoBehaviour
     {
         OnColliderEntered?.Invoke(collision);
 
-        if (colliderEnterEventRaise != null)
+        if (passEnterCollisionData)
         {
-            if (passEnterCollisionData)
-            {
-                genericTriggerEnterRaise?.Invoke(eventBus, new object[] { collision });
-            }
-            else
-            {
-                genericTriggerEnterRaise?.Invoke(eventBus, new object[] { new object[0] });
-            }
+            genericTriggerEnterRaise?.Invoke(eventBus, new object[] { collision });
+        }
+        else
+        {
+            genericTriggerEnterRaise?.Invoke(eventBus, new object[] { new object[0] });
         }
     }
 
@@ -55,16 +53,14 @@ public class AreaCollider : MonoBehaviour
     {
         OnColliderExited?.Invoke(collision);
 
-        if (colliderExitEventRaise != null)
+
+        if (passExitCollisionData)
         {
-            if (passExitCollisionData)
-            {
-                genericTriggerExitRaise?.Invoke(eventBus, new object[] { collision });
-            }
-            else
-            {
-                genericTriggerExitRaise?.Invoke(eventBus, new object[] { new object[0] });
-            }
+            genericTriggerExitRaise?.Invoke(eventBus, new object[] { collision });
+        }
+        else
+        {
+            genericTriggerExitRaise?.Invoke(eventBus, new object[] { new object[0] });
         }
     }
 }

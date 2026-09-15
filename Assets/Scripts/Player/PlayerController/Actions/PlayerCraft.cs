@@ -16,9 +16,8 @@ public class PlayerCraft : MonoBehaviour
     private const int maxRecipes = 1;
 
     [Header("References")]
-    [SerializeField] private PlayerOrigamiPool origamiPool;
+    [SerializeField] private OrigamiPool origamiPool;
     [SerializeField] private Transform origamiSpawnPointTRS;
-    private Transform origamiPoolTRS;
     private EventBus eventBus;
 
     [Header("Config")]
@@ -50,18 +49,21 @@ public class PlayerCraft : MonoBehaviour
 
     private void Start()
     {
-        origamiPoolTRS = origamiPool.transform;
+
     }
 
     private void OnToggleCraft(InputValue value)
     {
-        isCrafting = !isCrafting;
-
-        eventBus.Raise<OnPlayerToggleCraft>(isCrafting);
-
-        if (isCrafting)
+        if (enabled)
         {
-            ResetCache();
+            isCrafting = !isCrafting;
+
+            eventBus.Raise<OnPlayerToggleCraft>(isCrafting);
+
+            if (isCrafting)
+            {
+                ResetCache();
+            }
         }
     }
 
@@ -135,7 +137,7 @@ public class PlayerCraft : MonoBehaviour
         {
             if (MatchesRecipe(recipes[i].moves, cachedMoves))
             {
-                GameObject origami = origamiPool.GetOrigami(recipes[i].type, origamiSpawnPointTRS.position, Quaternion.identity, origamiPoolTRS);
+                GameObject origami = origamiPool.GetOrigami(recipes[i].type, origamiSpawnPointTRS.position, Quaternion.identity, transform);
 
                 eventBus.Raise<OnPlayerCraftedOrigami>(origami.GetComponent<Origami>());
 
