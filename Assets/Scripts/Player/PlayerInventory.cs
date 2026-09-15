@@ -15,6 +15,7 @@ public class PlayerInventory : MonoBehaviour
 
         eventBus.Subscribe<OnPlayerPickUp>((Action<OnPlayerPickUp>)HandleOnPropPickUp);
         eventBus.Subscribe<OnPlayerPickUpAnimFinished>((Action)HandleOnPropPickedUp);
+        eventBus.Subscribe<OnPlayerCraftedOrigami>((Action<OnPlayerCraftedOrigami>)HandlePlayerCraftOrigami);
     }
 
     private void HandleOnPropPickUp(OnPlayerPickUp data)
@@ -24,6 +25,12 @@ public class PlayerInventory : MonoBehaviour
 
     private void HandleOnPropPickedUp()
     {
+        currentProp.Disable();
+    }
+
+    private void HandlePlayerCraftOrigami(OnPlayerCraftedOrigami data)
+    {
+        currentProp = data.origami;
         currentProp.Disable();
     }
 }

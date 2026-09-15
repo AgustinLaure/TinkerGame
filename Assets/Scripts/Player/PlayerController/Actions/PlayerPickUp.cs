@@ -14,12 +14,10 @@ public class PlayerPickUp : MonoBehaviour
 
     private Collider[] propColliders = new Collider[maxColliders];
 
-
-    private void Start()
+    private void Awake()
     {
         eventBus = ServiceLocator.Instance.GetService<EventBus>();
     }
-
 
     private void OnPickUp(InputValue value)
     {

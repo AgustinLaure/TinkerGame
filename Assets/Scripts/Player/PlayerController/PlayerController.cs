@@ -83,6 +83,7 @@ public class PlayerController : MonoBehaviour
         };
 
         eventBus.Subscribe<OnPlayerToggleCraft>((Action<OnPlayerToggleCraft>)craftState.OnStopCrafting);
+        eventBus.Subscribe<OnPlayerCraftedOrigami>((Action<OnPlayerCraftedOrigami>)craftState.OnCrafted);
 
         Dictionary<Type, State> states = new Dictionary<Type, State>()
         {
@@ -311,6 +312,11 @@ public class PlayerController : MonoBehaviour
             {
                 playerController.fsm.TryChange<CraftState>(typeof(IdleState));
             }
+        }
+
+        public void OnCrafted(OnPlayerCraftedOrigami data)
+        {
+            playerController.fsm.TryChange<CraftState>(typeof(IdleState));
         }
     }
 }
