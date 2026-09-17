@@ -37,6 +37,7 @@ public class TestInput : MonoSingleton<TestInput>
         }
         if (Keyboard.current.spaceKey.isPressed && onMain)
         {
+            if (gameManager.levelData == null) return;
             gameManager.StartLevel();
             option = 3;
             onMain = false;

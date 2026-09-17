@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     private LevelData activeLevelData;
 
     public LevelManager levelManager { get { return activeLevelManager; } }
+    public LevelData levelData { get { return activeLevelData; } }
 
     private void Awake()
     {

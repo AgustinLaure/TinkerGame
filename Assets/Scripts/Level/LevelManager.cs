@@ -23,13 +23,16 @@ public class LevelManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        Time.timeScale = 1.0f;
         if (gameManager != null) gameManager.SetActiveLevelManager(null);
     }
 
     public void TogglePause()
     {
         isPaused = !isPaused;
-        Debug.Log("Pause state: " + IsPaused);
+        Time.timeScale = isPaused ? 1.0f : 0.0f ;
+        eventBus.Raise<OnPause>(IsPaused);
+        Debug.Log("Game is " + (IsPaused? "Unp" : "P") + "aused");
     }
 
     public void OnWin()

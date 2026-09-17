@@ -1,16 +1,14 @@
 using UnityEngine;
 
-public class OnPause : MonoBehaviour
+public class OnPause : IEvent
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    private bool isPaused;
 
-    // Update is called once per frame
-    void Update()
+    public void Set(params object[] data)
     {
-        
+        isPaused = (bool)data[0];
+    }
+    public void Reset()
+    {
     }
 }
