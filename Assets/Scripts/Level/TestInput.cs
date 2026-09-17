@@ -20,7 +20,7 @@ public class TestInput : MonoSingleton<TestInput>
 
     void Update()
     {
-        if (Keyboard.current.escapeKey.isPressed && !onMain)
+        if (Keyboard.current.tabKey.isPressed && !onMain)
         {
             SceneManager.LoadScene("MainMenuTest");
             onMain = true;
@@ -40,6 +40,14 @@ public class TestInput : MonoSingleton<TestInput>
             gameManager.StartLevel();
             option = 3;
             onMain = false;
+        }
+
+
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            if (gameManager.levelManager == null) return;
+
+            gameManager.levelManager.TogglePause();
         }
     }
 }

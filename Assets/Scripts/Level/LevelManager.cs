@@ -6,8 +6,13 @@ public class LevelManager : MonoBehaviour
 
     private EventBus eventBus;
 
-    [SerializeField] private GameObject playerSpawnPoint; 
-    
+    [SerializeField] private GameObject playerSpawnPoint;
+
+    private bool isPaused = false;
+
+    public bool IsPaused { get { return isPaused; } } 
+
+
     void Awake()
     {
         eventBus = ServiceLocator.Instance.GetService<EventBus>();
@@ -19,6 +24,12 @@ public class LevelManager : MonoBehaviour
     private void OnDestroy()
     {
         if (gameManager != null) gameManager.SetActiveLevelManager(null);
+    }
+
+    public void TogglePause()
+    {
+        isPaused = !isPaused;
+        Debug.Log("Pause state: " + IsPaused);
     }
 
     public void OnWin()
