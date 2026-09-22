@@ -7,6 +7,7 @@ public class LevelManager : MonoBehaviour
     private EventBus eventBus;
 
     [SerializeField] private GameObject playerSpawnPoint;
+    [SerializeField] private GameObject pausePanel;
 
     private bool isPaused = false;
 
@@ -19,6 +20,8 @@ public class LevelManager : MonoBehaviour
 
         gameManager = ServiceLocator.Instance.GetService<GameManager>();
         gameManager.SetActiveLevelManager(this);
+
+        if (pausePanel != null) pausePanel.SetActive(false);
     }
 
     private void OnDestroy()
@@ -30,8 +33,9 @@ public class LevelManager : MonoBehaviour
     public void TogglePause()
     {
         isPaused = !isPaused;
-        Time.timeScale = isPaused ? 1.0f : 0.0f ;
+        Time.timeScale = isPaused ? 0.0f : 1.0f ;
         eventBus.Raise<OnPause>(IsPaused);
+        if (pausePanel != null) pausePanel.SetActive(IsPaused);
         Debug.Log("Game is " + (IsPaused? "Unp" : "P") + "aused");
     }
 
