@@ -684,6 +684,10 @@ PrefabInstance:
       propertyPath: triggerEnterEventTypeName
       value: OnPlayerDetectedLand
       objectReference: {fileID: 0}
+    - target: {fileID: 2455840751192353189, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: triggerEnterEventClassName
+      value: OnPlayerDetectedLand
+      objectReference: {fileID: 0}
     - target: {fileID: 3909645170610483823, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
       propertyPath: m_Enabled
       value: 0
