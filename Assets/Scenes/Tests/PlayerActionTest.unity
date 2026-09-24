@@ -672,9 +672,29 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 442777173152098497, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 442777173152098497, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: origamiPool
+      value: 
+      objectReference: {fileID: 2131853617}
+    - target: {fileID: 2455840751192353189, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: triggerEnterEventTypeName
+      value: OnPlayerDetectedLand
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909645170610483823, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4453225154132744728, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 4649881336701549939, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9016435439561167862, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
       propertyPath: m_LocalPosition.x
@@ -721,6 +741,65 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+--- !u!1 &2131853615
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2131853618}
+  - component: {fileID: 2131853617}
+  - component: {fileID: 2131853616}
+  m_Layer: 0
+  m_Name: OrigamiPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2131853616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2131853615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26699ae8bca0e42428dba711567a3684, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityPool
+  prefab: {fileID: 6942000788410757184, guid: b06c650e5b7ddba449cd83b147d0791f, type: 3}
+--- !u!114 &2131853617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2131853615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76a7c3824050d2d43876c26c852ebe97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OrigamiPool
+  aicraftUnityPool: {fileID: 2131853616}
+--- !u!4 &2131853618
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2131853615}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.57414, y: 1.283, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -731,3 +810,4 @@ SceneRoots:
   - {fileID: 1588868613}
   - {fileID: 2014864664}
   - {fileID: 380189574}
+  - {fileID: 2131853618}

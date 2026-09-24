@@ -4,9 +4,10 @@ using UnityEngine.InputSystem;
 
 public class PlayerJump : MonoBehaviour
 {
-    [Header("Values")]
+    [Header("Config")]
     [SerializeField] private float jumpImpulse;
     [SerializeField] private float delay;
+    [SerializeField] private float jumpCooldown;
 
     [Header("References")]
     [SerializeField] private PlayerInput playerInput;
@@ -20,6 +21,7 @@ public class PlayerJump : MonoBehaviour
     private Vector3 jumpDirection = Vector3.up;
 
     private Coroutine jumpCoroutine = null;
+
 
     private void Start()
     {
@@ -42,6 +44,8 @@ public class PlayerJump : MonoBehaviour
         yield return new WaitForSeconds(delay);
 
         isJumpRequested = true;
+
+        yield return new WaitForSeconds(jumpCooldown);
 
         jumpCoroutine = null;
     }

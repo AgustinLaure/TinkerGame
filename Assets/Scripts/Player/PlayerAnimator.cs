@@ -163,6 +163,7 @@ public class PlayerAnimator : MonoBehaviour
             [typeof(DropState)] = dropState,
             [typeof(DropToIdleState)] = dropToIdleState,
             [typeof(AimState)] = aimState,
+            [typeof(AimingState)] = aimingState,
             [typeof(ThrowState)] = throwState,
             [typeof(ThrowToIdleState)] = throwToIdleState
         };
@@ -722,7 +723,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Exit()
         {
-
+            playerAnimator.eventBus.Raise<OnPlayerAimAnimFinished>();
         }
     }
 

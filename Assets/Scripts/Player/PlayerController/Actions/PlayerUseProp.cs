@@ -8,11 +8,14 @@ public class PlayerUseProp : MonoBehaviour
 
     private void OnUseProp(InputValue value)
     {
-        Prop currentProp = inventory.GetCurrentProp;
-
-        if (currentProp != null)
+        if (enabled)
         {
-            currentProp.Action();
+            Prop currentProp = inventory.GetCurrentProp;
+
+            if (currentProp != null)
+            {
+                currentProp.Action();
+            }
         }
     }
 }
