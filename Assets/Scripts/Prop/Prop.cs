@@ -28,7 +28,7 @@ public abstract class Prop : MonoBehaviour, IPickable
         rb.detectCollisions = true;
     }
 
-    protected void DisableRigidbody(Rigidbody rb)
+    protected void DisableRigidBody(Rigidbody rb)
     {
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class OnAircraftLaunched : IEvent
+public class OnOrigamiUsed : IEvent
 {
     public void Set(params object[] data)
     {

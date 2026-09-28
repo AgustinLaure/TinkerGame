@@ -13,7 +13,7 @@ public class PlayerCraft : MonoBehaviour
         Right
     }
 
-    private const int maxRecipes = 1;
+    private const int maxRecipes = 2;
 
     [Header("References")]
     [SerializeField] private OrigamiPool origamiPool;
@@ -29,6 +29,7 @@ public class PlayerCraft : MonoBehaviour
     [Header("Config")]
     [SerializeField] private const int maxPossibleMoves = 10;
     [SerializeField] private Move[] aicraftRecipe;
+    [SerializeField] private Move[] frogRecipe;
 
     private struct Recipe
     {
@@ -47,6 +48,9 @@ public class PlayerCraft : MonoBehaviour
     {
         recipes[0].moves = aicraftRecipe;
         recipes[0].type = typeof(Aircraft);
+
+        recipes[1].moves = frogRecipe;
+        recipes[1].type = typeof(Frog);
     }
 
     private void Start()
@@ -140,7 +144,7 @@ public class PlayerCraft : MonoBehaviour
         {
             if (MatchesRecipe(recipes[i].moves, cachedMoves))
             {
-                GameObject origami = origamiPool.GetOrigami(recipes[i].type, origamiSpawnPointTRS.position, Quaternion.identity, transform);
+                GameObject origami = origamiPool.GetOrigami(recipes[i].type, origamiSpawnPointTRS.position, transform.rotation, transform);
 
                 eventBus.Raise<OnPlayerCraftedOrigami>(origami.GetComponent<Origami>());
 

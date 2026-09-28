@@ -6,9 +6,6 @@ using UnityEngine.InputSystem;
 public class Aircraft : Origami
 {
     [Header("References")]
-    [SerializeField] private GameObject aircraftRenderer;
-    [SerializeField] private GameObject aircraftCollider;
-    [SerializeField] private AreaCollider areaCollider;
 
     private PlayerInput playerInput;
     private InputAction cursorPosAction;
@@ -24,6 +21,7 @@ public class Aircraft : Origami
     [SerializeField] private float impulse;
     [SerializeField] private float accel;
     [SerializeField] private float accelDuration;
+    [SerializeField] private float timeToEnablePlayerCollision;
 
     private Vector3 direction;
     private bool shouldLaunch = false;
@@ -41,8 +39,7 @@ public class Aircraft : Origami
     private const ForceMode launchForceMode = ForceMode.Impulse;
     private const ForceMode accelForceMode = ForceMode.Acceleration;
 
-    private int baseLayer = 0;
-    private int noPlayerColLayer = 0;
+    private const string crumpleClipNameConst = "Crumple";
 
     private void Awake()
     {
@@ -55,8 +52,7 @@ public class Aircraft : Origami
     private void Start()
     {
         baseLayer = LayerMask.NameToLayer("Prop");
-        noPlayerColLayer = LayerMask.NameToLayer("NoPlayerCol");
-
+        crumpleClipName = crumpleClipNameConst;
         mainCamera = Camera.main;
 
         ServiceLocator serviceLocator = ServiceLocator.Instance;
@@ -74,11 +70,14 @@ public class Aircraft : Origami
     {
         if (!isCrumpled)
         {
-            if (rb.linearVelocity.x > 0.01f || rb.linearVelocity.y > 0.01f)
+            Vector2 linearVelocity = rb.linearVelocity;
+
+            if (linearVelocity.x != 0f || linearVelocity.y != 0f)
             {
-                Vector3 linear = rb.linearVelocity.normalized;
+                Vector3 linear = linearVelocity;
                 Vector3 newUp = Vector3.Cross(linear, Vector3.forward);
-                rb.rotation = Quaternion.LookRotation(linear, newUp);
+
+                transform.rotation = Quaternion.LookRotation(linear, newUp);
             }
         }
     }
@@ -125,7 +124,7 @@ public class Aircraft : Origami
 
     public override void Enable()
     {
-        aircraftRenderer.SetActive(true);
+        origamiRenderer.SetActive(true);
         EnableRigidBody(rb);
     }
 
@@ -162,8 +161,8 @@ public class Aircraft : Origami
 
     public override void Disable()
     {
-        aircraftRenderer.SetActive(false);
-        DisableRigidbody(rb);
+        origamiRenderer.SetActive(false);
+        DisableRigidBody(rb);
     }
 
     public void HandleAimAnimFinish()
@@ -190,7 +189,7 @@ public class Aircraft : Origami
 
             cursorPosition = cursorPosAction.ReadValue<Vector2>();
             HandleRotation();
-            
+
             hasClicked = usePropAction.WasPressedThisFrame();
         }
 
@@ -201,12 +200,14 @@ public class Aircraft : Origami
 
         direction = Vector3.Normalize(cursorPos - transform.position);
 
-        aircraftCollider.layer = noPlayerColLayer;
-
         Enable();
         Launch();
 
-        eventBus.Raise<OnAircraftLaunched>();
+        eventBus.Raise<OnOrigamiUsed>();
+
+        yield return new WaitForSeconds(timeToEnablePlayerCollision);
+        
+        sphereCollider.gameObject.layer = baseLayer;
 
         throwCoroutine = null;
     }

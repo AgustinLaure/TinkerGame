@@ -108,32 +108,41 @@ public class PlayerAnimator : MonoBehaviour
         eventBus.Subscribe<OnPlayerPickUp>((Action<OnPlayerPickUp>)idleState.OnPickUp);
         eventBus.Subscribe<OnPlayerDrop>((Action)idleState.OnDrop);
         eventBus.Subscribe<OnPlayerAim>((Action)idleState.OnAim);
+        eventBus.Subscribe<OnPushPlayer>((Action<OnPushPlayer>)idleState.OnFall);
 
         IdleToWalkState idleToWalkState = new IdleToWalkState(this);
         eventBus.Subscribe<OnPlayerJump>((Action)idleToWalkState.OnJump);
         eventBus.Subscribe<OnPlayerPickUp>((Action<OnPlayerPickUp>)idleToWalkState.OnPickUp);
         eventBus.Subscribe<OnPlayerDrop>((Action)idleToWalkState.OnDrop);
+        eventBus.Subscribe<OnPushPlayer>((Action<OnPushPlayer>)idleToWalkState.OnFall);
 
         WalkState walkState = new WalkState(this);
         eventBus.Subscribe<OnPlayerJump>((Action)walkState.OnJump);
         eventBus.Subscribe<OnPlayerPickUp>((Action<OnPlayerPickUp>)walkState.OnPickUp);
         eventBus.Subscribe<OnPlayerDrop>((Action)walkState.OnDrop);
+        eventBus.Subscribe<OnPushPlayer>((Action<OnPushPlayer>)walkState.OnFall);
 
         WalkToIdleState walkToIdleState = new WalkToIdleState(this);
         eventBus.Subscribe<OnPlayerJump>((Action)walkToIdleState.OnJump);
         eventBus.Subscribe<OnPlayerPickUp>((Action<OnPlayerPickUp>)walkToIdleState.OnPickUp);
         eventBus.Subscribe<OnPlayerDrop>((Action)walkToIdleState.OnDrop);
+        eventBus.Subscribe<OnPushPlayer>((Action<OnPushPlayer>)walkToIdleState.OnFall);
 
         JumpState jumpState = new JumpState(this);
 
         FallState fallState = new FallState(this);
-        eventBus.Subscribe<OnPlayerDetectedLand>((Action)fallState.OnLand);
 
         LandState landState = new LandState(this);
+        eventBus.Subscribe<OnPushPlayer>((Action<OnPushPlayer>)landState.OnFall);
 
         LandToIdleState landToIdleState = new LandToIdleState(this);
+        eventBus.Subscribe<OnPlayerJump>((Action)landToIdleState.OnJump);
+        eventBus.Subscribe<OnPushPlayer>((Action<OnPushPlayer>)landToIdleState.OnFall);
+        eventBus.Subscribe<OnPlayerMovedHorizontally>((Action<OnPlayerMovedHorizontally>)landToIdleState.OnMove);
 
         LandToWalkState landToWalkState = new LandToWalkState(this);
+        eventBus.Subscribe<OnPlayerJump>((Action)landToWalkState.OnJump);
+        eventBus.Subscribe<OnPushPlayer>((Action<OnPushPlayer>)landToWalkState.OnFall);
 
         PickUpState pickUpState = new PickUpState(this);
 
@@ -178,36 +187,6 @@ public class PlayerAnimator : MonoBehaviour
     private void Update()
     {
         fsm.Update();
-    }
-
-    private bool GetCurrentAnimationEnded(int currentAnimHash)
-    {
-        AnimatorStateInfo animatorInfo = animator.GetCurrentAnimatorStateInfo(0);
-
-        return animatorInfo.normalizedTime >= 1f && animatorInfo.shortNameHash == currentAnimHash;
-    }
-
-    private float GetCurrentAnimatioNNormalizedTime()
-    {
-        return animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-    }
-
-    private float GetCurrentAnimationLength()
-    {
-        return animator.GetCurrentAnimatorClipInfo(0).Length;
-    }
-
-    private void AccelerateCurrentAnimation(float duration)
-    {
-        float animLength = GetCurrentAnimationLength();
-        float currentNormTime = GetCurrentAnimatioNNormalizedTime();
-
-        float remainingTime = animLength - animLength * currentNormTime;
-
-        if (remainingTime > duration)
-        {
-            animator.SetFloat(animSpeedHash, remainingTime * (1f / duration));
-        }
     }
 
     private class IdleState : global::State
@@ -264,6 +243,11 @@ public class PlayerAnimator : MonoBehaviour
         {
             playerAnimator.fsm.TryChange<IdleState>(typeof(AimState));
         }
+
+        public void OnFall(OnPushPlayer data)
+        {
+            playerAnimator.fsm.TryChange<IdleState>(typeof(FallState));
+        }
     }
 
     private class IdleToWalkState : global::State
@@ -293,7 +277,7 @@ public class PlayerAnimator : MonoBehaviour
             }
             else
             {
-                if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.IdleToWalk]))
+                if (AnimationUtils.GetCurrentAnimationEnded(playerAnimator.animator, playerAnimator.statesAnimatorHash[State.IdleToWalk]))
                 {
                     playerAnimator.fsm.TryChange<IdleToWalkState>(typeof(WalkState));
                 }
@@ -326,6 +310,11 @@ public class PlayerAnimator : MonoBehaviour
         public void OnDrop()
         {
             playerAnimator.fsm.TryChange<IdleToWalkState>(typeof(DropState));
+        }
+
+        public void OnFall(OnPushPlayer data)
+        {
+            //playerAnimator.fsm.TryChange<IdleToWalkState>(typeof(FallState));
         }
     }
 
@@ -384,6 +373,11 @@ public class PlayerAnimator : MonoBehaviour
         {
             playerAnimator.fsm.TryChange<WalkState>(typeof(DropState));
         }
+
+        public void OnFall(OnPushPlayer data)
+        {
+            //playerAnimator.fsm.TryChange<WalkState>(typeof(FallState));
+        }
     }
 
     private class WalkToIdleState : global::State
@@ -418,7 +412,7 @@ public class PlayerAnimator : MonoBehaviour
                 playerAnimator.fsm.TryChange<WalkToIdleState>(typeof(WalkState));
             }
 
-            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.WalkToIdle]))
+            if (AnimationUtils.GetCurrentAnimationEnded(playerAnimator.animator, playerAnimator.statesAnimatorHash[State.WalkToIdle]))
             {
                 playerAnimator.fsm.TryChange<WalkToIdleState>(typeof(IdleState));
             }
@@ -443,6 +437,11 @@ public class PlayerAnimator : MonoBehaviour
         {
             playerAnimator.fsm.TryChange<WalkToIdleState>(typeof(DropState));
         }
+
+        public void OnFall(OnPushPlayer data)
+        {
+            //playerAnimator.fsm.TryChange<WalkToIdleState>(typeof(FallState));
+        }
     }
 
     private class JumpState : global::State
@@ -463,7 +462,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Update()
         {
-            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.Jump]))
+            if (AnimationUtils.GetCurrentAnimationEnded(playerAnimator.animator, playerAnimator.statesAnimatorHash[State.Jump]))
             {
                 isOnAir = playerAnimator.playerController.GetIsOnAirState;
                 horizontalInput = playerAnimator.moveAction.ReadValue<Vector2>().x;
@@ -495,31 +494,40 @@ public class PlayerAnimator : MonoBehaviour
     private class FallState : global::State
     {
         private PlayerAnimator playerAnimator;
+       //private float timer = timeToEndAnim;
+       //
+       //private const float timeToEndAnim = 0.05f;
 
         public FallState(PlayerAnimator playerAnimator)
         {
             this.playerAnimator = playerAnimator;
         }
 
-
         public override void Enter()
         {
             playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.Fall);
+            //timer = timeToEndAnim;
         }
 
         public override void Update()
         {
+                if (!playerAnimator.playerController.GetIsOnAirState)
+                {
+                    playerAnimator.fsm.TryChange<FallState>(typeof(LandState));
+                }
 
+           //if (timer < 0f)
+           //{
+           //}
+           //else
+           //{
+           //    timer -= Time.deltaTime;
+           //}
         }
 
         public override void Exit()
         {
 
-        }
-
-        public void OnLand()
-        {
-            playerAnimator.fsm.TryChange<FallState>(typeof(LandState));
         }
     }
 
@@ -540,7 +548,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Update()
         {
-            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.Land]))
+            if (AnimationUtils.GetCurrentAnimationEnded(playerAnimator.animator, playerAnimator.statesAnimatorHash[State.Land]))
             {
                 horizontalInput = playerAnimator.moveAction.ReadValue<Vector2>().x;
 
@@ -558,6 +566,11 @@ public class PlayerAnimator : MonoBehaviour
         public override void Exit()
         {
 
+        }
+
+        public void OnFall(OnPushPlayer data)
+        {
+           //playerAnimator.fsm.TryChange<LandState>(typeof(FallState));
         }
     }
 
@@ -577,7 +590,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Update()
         {
-            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.LandToIdle]))
+            if (AnimationUtils.GetCurrentAnimationEnded(playerAnimator.animator, playerAnimator.statesAnimatorHash[State.LandToIdle]))
             {
                 playerAnimator.fsm.TryChange<LandToIdleState>(typeof(IdleState));
             }
@@ -586,6 +599,21 @@ public class PlayerAnimator : MonoBehaviour
         public override void Exit()
         {
 
+        }
+
+        public void OnJump()
+        {
+            playerAnimator.fsm.TryChange<LandToIdleState>(typeof(JumpState));
+        }
+
+        public void OnMove(OnPlayerMovedHorizontally data)
+        {
+            playerAnimator.fsm.TryChange<LandToIdleState>(typeof(IdleToWalkState));
+        }
+
+        public void OnFall(OnPushPlayer data)
+        {
+           // playerAnimator.fsm.TryChange<LandToIdleState>(typeof(FallState));
         }
     }
 
@@ -605,15 +633,23 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Update()
         {
-            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.LandToWalk]))
+            if (AnimationUtils.GetCurrentAnimationEnded(playerAnimator.animator, playerAnimator.statesAnimatorHash[State.LandToWalk]))
             {
                 playerAnimator.fsm.TryChange<LandToWalkState>(typeof(WalkState));
             }
         }
-
         public override void Exit()
         {
 
+        }
+        public void OnJump()
+        {
+            playerAnimator.fsm.TryChange<LandToWalkState>(typeof(JumpState));
+        }
+
+        public void OnFall(OnPushPlayer data)
+        {
+            //playerAnimator.fsm.TryChange<LandToWalkState>(typeof(FallState));
         }
     }
 
@@ -633,7 +669,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Update()
         {
-            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.PickUp]))
+            if (AnimationUtils.GetCurrentAnimationEnded(playerAnimator.animator, playerAnimator.statesAnimatorHash[State.PickUp]))
             {
                 playerAnimator.fsm.TryChange<PickUpState>(typeof(IdleState));
             }
@@ -661,7 +697,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Update()
         {
-            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.Drop]))
+            if (AnimationUtils.GetCurrentAnimationEnded(playerAnimator.animator, playerAnimator.statesAnimatorHash[State.Drop]))
             {
                 playerAnimator.fsm.TryChange<DropState>(typeof(DropToIdleState));
             }
@@ -689,7 +725,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Update()
         {
-            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.DropToIdle]))
+            if (AnimationUtils.GetCurrentAnimationEnded(playerAnimator.animator, playerAnimator.statesAnimatorHash[State.DropToIdle]))
             {
                 playerAnimator.fsm.TryChange<DropToIdleState>(typeof(IdleState));
             }
@@ -717,7 +753,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Update()
         {
-            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.Aim]))
+            if (AnimationUtils.GetCurrentAnimationEnded(playerAnimator.animator, playerAnimator.statesAnimatorHash[State.Aim]))
             {
                 playerAnimator.fsm.TryChange<AimState>(typeof(AimingState));
             }
@@ -775,7 +811,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Update()
         {
-            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.Throw]))
+            if (AnimationUtils.GetCurrentAnimationEnded(playerAnimator.animator, playerAnimator.statesAnimatorHash[State.Throw]))
             {
                 playerAnimator.fsm.TryChange<ThrowState>(typeof(ThrowToIdleState));
             }
@@ -784,7 +820,7 @@ public class PlayerAnimator : MonoBehaviour
         public override void Exit()
         {
             playerAnimator.eventBus.Raise<OnPlayerThrowAnimFinished>();
-        } 
+        }
     }
 
     private class ThrowToIdleState : global::State
@@ -803,7 +839,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Update()
         {
-            if (playerAnimator.GetCurrentAnimationEnded(playerAnimator.statesAnimatorHash[State.ThrowToIdle]))
+            if (AnimationUtils.GetCurrentAnimationEnded(playerAnimator.animator, playerAnimator.statesAnimatorHash[State.ThrowToIdle]))
             {
                 playerAnimator.fsm.TryChange<ThrowToIdleState>(typeof(IdleState));
             }
@@ -811,7 +847,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Exit()
         {
-           
+
         }
     }
 }
