@@ -6,8 +6,6 @@ using UnityEngine.InputSystem;
 public class Aircraft : Origami
 {
     [Header("References")]
-    [SerializeField] private GameObject aircraftRenderer;
-    [SerializeField] private GameObject aircraftCollider;
 
     private PlayerInput playerInput;
     private InputAction cursorPosAction;
@@ -23,6 +21,7 @@ public class Aircraft : Origami
     [SerializeField] private float impulse;
     [SerializeField] private float accel;
     [SerializeField] private float accelDuration;
+    [SerializeField] private float timeToEnablePlayerCollision;
 
     private Vector3 direction;
     private bool shouldLaunch = false;
@@ -53,7 +52,6 @@ public class Aircraft : Origami
     private void Start()
     {
         baseLayer = LayerMask.NameToLayer("Prop");
-        noPlayerColLayer = LayerMask.NameToLayer("NoPlayerCol");
         crumpleClipName = crumpleClipNameConst;
         mainCamera = Camera.main;
 
@@ -126,7 +124,7 @@ public class Aircraft : Origami
 
     public override void Enable()
     {
-        aircraftRenderer.SetActive(true);
+        origamiRenderer.SetActive(true);
         EnableRigidBody(rb);
     }
 
@@ -163,8 +161,8 @@ public class Aircraft : Origami
 
     public override void Disable()
     {
-        aircraftRenderer.SetActive(false);
-        DisableRigidbody(rb);
+        origamiRenderer.SetActive(false);
+        DisableRigidBody(rb);
     }
 
     public void HandleAimAnimFinish()
@@ -202,12 +200,14 @@ public class Aircraft : Origami
 
         direction = Vector3.Normalize(cursorPos - transform.position);
 
-        aircraftCollider.layer = noPlayerColLayer;
-
         Enable();
         Launch();
 
-        eventBus.Raise<OnAircraftLaunched>();
+        eventBus.Raise<OnOrigamiUsed>();
+
+        yield return new WaitForSeconds(timeToEnablePlayerCollision);
+        
+        sphereCollider.gameObject.layer = baseLayer;
 
         throwCoroutine = null;
     }

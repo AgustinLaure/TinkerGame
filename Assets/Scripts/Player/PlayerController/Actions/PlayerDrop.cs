@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,12 +7,14 @@ public class PlayerDrop : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Transform dropPoint;
+    [SerializeField] private PlayerInventory playerInventory;
     private PlayerInput playerInput;
     private InputAction dropAction;
     private EventBus eventBus;
 
-    private Prop currentProp = null;
+    private bool dropAnimFinished = false;
 
+    private Coroutine dropCoroutine = null;
 
     private void Start()
     {
@@ -20,7 +23,7 @@ public class PlayerDrop : MonoBehaviour
         eventBus = serviceLocator.GetService<EventBus>();
 
         eventBus.Subscribe<OnPlayerDropAnimFinished>((Action)HandlePlayerDropAnimFinish);
-        eventBus.Subscribe<OnPlayerPickUp>((Action<OnPlayerPickUp>)HandlePlayerPickUp);
+        eventBus.Subscribe<OnPlayerTryDrop>((Action)HandlePlayerTryDrop);
 
         playerInput = serviceLocator.GetService<PlayerInput>();
         dropAction = playerInput.actions["Drop"];
@@ -29,23 +32,64 @@ public class PlayerDrop : MonoBehaviour
 
     private void OnDrop(InputAction.CallbackContext value)
     {
-        if (currentProp != null)
+        if (enabled)
         {
-            eventBus.Raise<OnPlayerDrop>();
+            if (playerInventory.GetCurrentProp != null)
+            {
+                if (dropCoroutine == null)
+                {
+                    dropCoroutine = StartCoroutine(DropCoroutine());
+                }
+            }
         }
     }
 
-    private void HandlePlayerPickUp(OnPlayerPickUp data)
+    private IEnumerator DropCoroutine()
     {
-        currentProp = data.prop;
+        dropAnimFinished = false;
+
+        eventBus.Raise<OnPlayerDrop>();
+
+        while (!dropAnimFinished)
+        {
+            yield return null;
+
+            Prop currentProp = playerInventory.GetCurrentProp;
+
+            if (currentProp != null)
+            {
+                currentProp.transform.position = dropPoint.transform.position;
+            }
+        }
+
+        dropCoroutine = null;
+    }
+
+    private void HandlePlayerTryDrop()
+    {
+        Prop currentProp = playerInventory.GetCurrentProp;
+
+        if (currentProp != null)
+        {
+            if (dropCoroutine == null)
+            {
+                dropCoroutine = StartCoroutine(DropCoroutine());
+            }
+        }
     }
 
     private void HandlePlayerDropAnimFinish()
     {
-        currentProp.transform.position = dropPoint.position;
-        currentProp.Enable();
+        Prop currentProp = playerInventory.GetCurrentProp;
 
-        currentProp = null;
+        if (currentProp != null)
+        {
+            currentProp.transform.position = dropPoint.position;
+            currentProp.Enable();
+
+            dropAnimFinished = true;
+            currentProp = null;
+        }
     }
 
     private void OnDestroy()

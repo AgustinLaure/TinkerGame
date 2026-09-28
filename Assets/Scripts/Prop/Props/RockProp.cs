@@ -22,7 +22,7 @@ public class RockProp : Prop
 
     public override void Disable()
     {
-        DisableRigidbody(rb);
+        DisableRigidBody(rb);
         rendererObject.SetActive(false);
         colliderObject.SetActive(false);
     }

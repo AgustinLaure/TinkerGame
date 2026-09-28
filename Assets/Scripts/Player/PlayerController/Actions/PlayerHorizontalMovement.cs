@@ -22,8 +22,8 @@ public class PlayerHorizontalMovement : MonoBehaviour
 
     private PhysicsMaterial originalLegsColliderMat;
 
-    private readonly Quaternion facingLeftRotation = Quaternion.Euler(0f,0,0f);
-    private readonly Quaternion facingRightRotation = Quaternion.Euler(0f,180f,0f);
+    private readonly Quaternion facingLeftRotation = Quaternion.Euler(0f, 0, 0f);
+    private readonly Quaternion facingRightRotation = Quaternion.Euler(0f, 180f, 0f);
 
     private void Start()
     {
@@ -47,15 +47,18 @@ public class PlayerHorizontalMovement : MonoBehaviour
     {
         if (playerAxisInput.x != 0f)
         {
-            rb.AddForce(new Vector3(playerAxisInput.x * acceleration, 0f, 0f), walkForceMode);
-            eventBus.Raise<OnPlayerMovedHorizontally>(playerAxisInput.x);
+            if ((playerAxisInput.x > 0f && rb.linearVelocity.x < terminalVelocity) || (playerAxisInput.x < 0f && rb.linearVelocity.x > -terminalVelocity))
+            {
+                rb.AddForce(new Vector3(playerAxisInput.x * acceleration, 0f, 0f), walkForceMode);
+                eventBus.Raise<OnPlayerMovedHorizontally>(playerAxisInput.x);
+            }
         }
 
-        rb.linearVelocity = new Vector3(Mathf.Clamp(rb.linearVelocity.x, -terminalVelocity, terminalVelocity), rb.linearVelocity.y, rb.linearVelocity.z);
+        //rb.linearVelocity = new Vector3(Mathf.Clamp(rb.linearVelocity.x, -terminalVelocity, terminalVelocity), rb.linearVelocity.y, rb.linearVelocity.z);
 
         if (playerAxisInput.magnitude <= 0f)
         {
-            SetLegsColliderSharedMaterial(originalLegsColliderMat);
+           SetLegsColliderSharedMaterial(originalLegsColliderMat);
         }
         else
         {

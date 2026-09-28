@@ -18,13 +18,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerDrop playerDrop;
     [SerializeField] private PlayerUseProp playerUseProp;
     [SerializeField] private PlayerCraft playerCraft;
-     private PlayerInput playerInput;
+    private PlayerInput playerInput;
     private InputAction moveAction;
 
     private const float epsilon = 1e-05f;
 
     private EventBus eventBus;
     private FSM fsm;
+
+    private const ForceMode pushForceMode = ForceMode.Impulse;
 
     public State GetState { get { return fsm.GetCurrentState; } }
 
@@ -38,6 +40,7 @@ public class PlayerController : MonoBehaviour
         eventBus = serviceLocator.GetService<EventBus>();
 
         eventBus.Subscribe<OnRotatePlayer>((Action<OnRotatePlayer>)HandlePlayerRotate);
+        eventBus.Subscribe<OnPushPlayer>((Action<OnPushPlayer>)HandlePlayerPush);
 
         moveAction = serviceLocator.GetService<PlayerInput>().actions["Move"];
 
@@ -97,7 +100,7 @@ public class PlayerController : MonoBehaviour
             playerUseProp
         };
 
-        eventBus.Subscribe<OnAircraftLaunched>((Action)aimState.OnAircraftLaunch);
+        eventBus.Subscribe<OnOrigamiUsed>((Action)aimState.OnAircraftLaunch);
 
         Dictionary<Type, State> states = new Dictionary<Type, State>()
         {
@@ -118,6 +121,11 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         fsm.Update();
+    }
+
+    private void HandlePlayerPush(OnPushPlayer data)
+    {
+        rb.AddForce(data.push, pushForceMode);
     }
 
     private void HandlePlayerRotate(OnRotatePlayer data)

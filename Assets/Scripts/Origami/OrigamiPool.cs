@@ -4,13 +4,9 @@ using System.Collections.Generic;
 
 public class OrigamiPool : MonoBehaviour
 {
-    public enum HandledOrigamis
-    {
-        Aircraft
-    }
-
     [Header("References")]
     [SerializeField] private UnityPool aicraftUnityPool;
+    [SerializeField] private UnityPool frogUnityPool;
     private EventBus eventBus;
 
     private Dictionary<Type, UnityPool> typeToPool;
@@ -19,7 +15,8 @@ public class OrigamiPool : MonoBehaviour
     {
         typeToPool = new Dictionary<Type, UnityPool>()
         {
-            [typeof(Aircraft)] = aicraftUnityPool
+            [typeof(Aircraft)] = aicraftUnityPool,
+            [typeof(Frog)] = frogUnityPool
         };
     }
 

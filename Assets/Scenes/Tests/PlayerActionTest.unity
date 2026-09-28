@@ -241,7 +241,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 824585675628576896, guid: 819ecc7d0340ac544b113578319b8a28, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.18
+      value: -4.74
       objectReference: {fileID: 0}
     - target: {fileID: 824585675628576896, guid: 819ecc7d0340ac544b113578319b8a28, type: 3}
       propertyPath: m_LocalPosition.y
@@ -664,6 +664,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1618752915 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3260028874548462281, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+  m_PrefabInstance: {fileID: 2014864664}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7955c5956e8fd9044a69fa15abf64619, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
 --- !u!1001 &2014864664
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -672,13 +683,77 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 138622679655429978, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 442777173152098497, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
       propertyPath: origamiPool
       value: 
       objectReference: {fileID: 2131853617}
+    - target: {fileID: 442777173152098497, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: frogRecipe.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 442777173152098497, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: 'frogRecipe.Array.data[0]'
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 442777173152098497, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: 'frogRecipe.Array.data[1]'
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 603021902873567054, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 1407544064742618902, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 2072302218965743744, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2072302218965743744, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 3440926712637350751, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: playerInventory
+      value: 
+      objectReference: {fileID: 1618752915}
     - target: {fileID: 4453225154132744728, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 4453225154132744728, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 6075676447399043614, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 7426455606609822356, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7426455606609822356, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 8041271583990938664, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 8290104388918939220, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8290104388918939220, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 9016435439561167862, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
       propertyPath: m_LocalPosition.x
@@ -686,7 +761,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9016435439561167862, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.8
+      value: 2.527
       objectReference: {fileID: 0}
     - target: {fileID: 9016435439561167862, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
       propertyPath: m_LocalPosition.z
@@ -720,7 +795,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 9056684417137399665, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 5324394715248871908, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -736,6 +816,7 @@ GameObject:
   - component: {fileID: 2131853618}
   - component: {fileID: 2131853617}
   - component: {fileID: 2131853616}
+  - component: {fileID: 2131853619}
   m_Layer: 0
   m_Name: OrigamiPool
   m_TagString: Untagged
@@ -769,6 +850,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OrigamiPool
   aicraftUnityPool: {fileID: 2131853616}
+  frogUnityPool: {fileID: 2131853619}
 --- !u!4 &2131853618
 Transform:
   m_ObjectHideFlags: 0
@@ -784,6 +866,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2131853619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2131853615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26699ae8bca0e42428dba711567a3684, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityPool
+  prefab: {fileID: 4720311483658818617, guid: 1989f5dda6c009647adbd31d328437a0, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

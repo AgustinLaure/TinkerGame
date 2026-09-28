@@ -4,9 +4,10 @@ using UnityEngine;
 public abstract class Origami : Prop
 {
     [Header("OrigamiRefs")]
+    [SerializeField] protected GameObject origamiRenderer;
     [SerializeField] protected AreaCollider areaCollider;
-    [SerializeField] private SphereCollider sphereCollider;
-    [SerializeField] private GameObject baseForm;
+    [SerializeField] protected SphereCollider sphereCollider;
+    [SerializeField] protected GameObject baseForm;
     [SerializeField] private GameObject crumpledForm;
     [SerializeField] private Animator animator;
 
