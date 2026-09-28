@@ -8,7 +8,6 @@ public class Aircraft : Origami
     [Header("References")]
     [SerializeField] private GameObject aircraftRenderer;
     [SerializeField] private GameObject aircraftCollider;
-    [SerializeField] private AreaCollider areaCollider;
 
     private PlayerInput playerInput;
     private InputAction cursorPosAction;
@@ -41,8 +40,7 @@ public class Aircraft : Origami
     private const ForceMode launchForceMode = ForceMode.Impulse;
     private const ForceMode accelForceMode = ForceMode.Acceleration;
 
-    private int baseLayer = 0;
-    private int noPlayerColLayer = 0;
+    private const string crumpleClipNameConst = "Crumple";
 
     private void Awake()
     {
@@ -56,7 +54,7 @@ public class Aircraft : Origami
     {
         baseLayer = LayerMask.NameToLayer("Prop");
         noPlayerColLayer = LayerMask.NameToLayer("NoPlayerCol");
-
+        crumpleClipName = crumpleClipNameConst;
         mainCamera = Camera.main;
 
         ServiceLocator serviceLocator = ServiceLocator.Instance;
@@ -78,8 +76,9 @@ public class Aircraft : Origami
 
             if (linearVelocity.x != 0f || linearVelocity.y != 0f)
             {
-                Vector3 linear = rb.linearVelocity.normalized;
+                Vector3 linear = linearVelocity;
                 Vector3 newUp = Vector3.Cross(linear, Vector3.forward);
+
                 transform.rotation = Quaternion.LookRotation(linear, newUp);
             }
         }
@@ -192,7 +191,7 @@ public class Aircraft : Origami
 
             cursorPosition = cursorPosAction.ReadValue<Vector2>();
             HandleRotation();
-            
+
             hasClicked = usePropAction.WasPressedThisFrame();
         }
 

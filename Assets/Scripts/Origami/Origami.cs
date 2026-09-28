@@ -4,16 +4,21 @@ using UnityEngine;
 public abstract class Origami : Prop
 {
     [Header("OrigamiRefs")]
-    [SerializeField] private SphereCollider sphereCollilder;
+    [SerializeField] protected AreaCollider areaCollider;
+    [SerializeField] private SphereCollider sphereCollider;
     [SerializeField] private GameObject baseForm;
     [SerializeField] private GameObject crumpledForm;
-    [SerializeField] private Animation legacyAnim;
+    [SerializeField] private Animator animator;
+
+    protected int baseLayer = 0;
+    protected int noPlayerColLayer = 0;
 
     protected string crumpleClipName;
+
     protected bool isCrumpled = false;
 
     private Coroutine crumpleCoroutine = null;
-    protected float crumpleColliderSize = 1f; 
+    protected float crumpleColliderSize = 1f;
 
     protected virtual void Crumple()
     {
@@ -27,10 +32,17 @@ public abstract class Origami : Prop
     {
         isCrumpled = true;
 
-        legacyAnim.Play(crumpleClipName);
+        animator.Play(crumpleClipName);
 
-        yield return new WaitUntil(() => !legacyAnim.isPlaying);
+        yield return new WaitUntil(() => AnimationUtils.GetCurrentAnimationNormalizedTime(animator) >= 1f);
 
-        sphereCollilder.GetComponent<SphereCollider>().radius = crumpleColliderSize;
+        sphereCollider.GetComponent<SphereCollider>().radius = crumpleColliderSize;
+
+        baseForm.SetActive(false);
+        crumpledForm.SetActive(true);
+
+        sphereCollider.gameObject.layer = baseLayer;
+
+        crumpleCoroutine = null;
     }
 }
