@@ -74,11 +74,13 @@ public class Aircraft : Origami
     {
         if (!isCrumpled)
         {
-            if (rb.linearVelocity.x > 0.01f || rb.linearVelocity.y > 0.01f)
+            Vector2 linearVelocity = rb.linearVelocity;
+
+            if (linearVelocity.x != 0f || linearVelocity.y != 0f)
             {
                 Vector3 linear = rb.linearVelocity.normalized;
                 Vector3 newUp = Vector3.Cross(linear, Vector3.forward);
-                rb.rotation = Quaternion.LookRotation(linear, newUp);
+                transform.rotation = Quaternion.LookRotation(linear, newUp);
             }
         }
     }
