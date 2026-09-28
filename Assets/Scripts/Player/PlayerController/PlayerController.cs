@@ -16,9 +16,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerJump playerJump;
     [SerializeField] private PlayerPickUp playerPickUp;
     [SerializeField] private PlayerDrop playerDrop;
-    [SerializeField] private PlayerInput playerInput;
     [SerializeField] private PlayerUseProp playerUseProp;
     [SerializeField] private PlayerCraft playerCraft;
+     private PlayerInput playerInput;
     private InputAction moveAction;
 
     private const float epsilon = 1e-05f;
@@ -30,16 +30,16 @@ public class PlayerController : MonoBehaviour
 
     public bool GetIsOnAirState { get { return fsm.GetCurrentState is OnAirState; } }
 
-    private void Awake()
-    {
-        eventBus = ServiceLocator.Instance.GetService<EventBus>();
-    }
 
     private void Start()
     {
+        ServiceLocator serviceLocator = ServiceLocator.Instance;
+
+        eventBus = serviceLocator.GetService<EventBus>();
+
         eventBus.Subscribe<OnRotatePlayer>((Action<OnRotatePlayer>)HandlePlayerRotate);
 
-        moveAction = playerInput.actions["Move"];
+        moveAction = serviceLocator.GetService<PlayerInput>().actions["Move"];
 
         IdleState idleState = new IdleState(this);
         idleState.actions = new List<MonoBehaviour>()

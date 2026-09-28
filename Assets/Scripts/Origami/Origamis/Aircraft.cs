@@ -6,9 +6,14 @@ using UnityEngine.InputSystem;
 public class Aircraft : Origami
 {
     [Header("References")]
-    [SerializeField] private GameObject renderer;
-    [SerializeField] private GameObject collider;
+    [SerializeField] private GameObject aircraftRenderer;
+    [SerializeField] private GameObject aircraftCollider;
     [SerializeField] private AreaCollider areaCollider;
+
+    private PlayerInput playerInput;
+    private InputAction cursorPosAction;
+    private InputAction usePropAction;
+
     private Camera mainCamera;
     private Rigidbody rb;
     private EventBus eventBus;
@@ -27,7 +32,7 @@ public class Aircraft : Origami
 
     private float accelDurationTimer = 0f;
 
-    private Vector2 mousePosition = Vector2.zero;
+    private Vector2 cursorPosition = Vector2.zero;
 
     private readonly Quaternion facingLeftRotation = Quaternion.Euler(0f, 0, 0f);
     private readonly Quaternion facingRightRotation = Quaternion.Euler(0f, 180f, 0f);
@@ -51,23 +56,22 @@ public class Aircraft : Origami
     {
         baseLayer = LayerMask.NameToLayer("Prop");
         noPlayerColLayer = LayerMask.NameToLayer("NoPlayerCol");
-       
+
         mainCamera = Camera.main;
 
-        eventBus = ServiceLocator.Instance.GetService<EventBus>();
+        ServiceLocator serviceLocator = ServiceLocator.Instance;
+
+        playerInput = serviceLocator.GetService<PlayerInput>();
+        cursorPosAction = playerInput.actions["CursorPos"];
+        usePropAction = playerInput.actions["UseProp"];
+
+        eventBus = serviceLocator.GetService<EventBus>();
         eventBus.Subscribe<OnPlayerAimAnimFinished>((Action)HandleAimAnimFinish);
         eventBus.Subscribe<OnPlayerThrowAnimFinished>((Action)HandleThrowAnimFinish);
     }
 
     private void Update()
     {
-        if (throwCoroutine != null)
-        {
-            mousePosition = Input.mousePosition;
-
-            HandleRotation();
-        }
-
         if (!isCrumpled)
         {
             if (rb.linearVelocity.x > 0.01f || rb.linearVelocity.y > 0.01f)
@@ -121,13 +125,13 @@ public class Aircraft : Origami
 
     public override void Enable()
     {
-        renderer.SetActive(true);
+        aircraftRenderer.SetActive(true);
         EnableRigidBody(rb);
     }
 
     public Vector3 GetMouseWorldPosition()
     {
-        Vector2 screenPos = mousePosition;
+        Vector2 screenPos = cursorPosition;
 
         Ray ray = mainCamera.ScreenPointToRay(screenPos);
 
@@ -158,7 +162,7 @@ public class Aircraft : Origami
 
     public override void Disable()
     {
-        renderer.SetActive(false);
+        aircraftRenderer.SetActive(false);
         DisableRigidbody(rb);
     }
 
@@ -183,17 +187,21 @@ public class Aircraft : Origami
         while (!hasClicked)
         {
             yield return null;
-            hasClicked = Input.GetMouseButtonDown(0);
+
+            cursorPosition = cursorPosAction.ReadValue<Vector2>();
+            HandleRotation();
+            
+            hasClicked = usePropAction.WasPressedThisFrame();
         }
 
-        Vector3 mousePos = GetMouseWorldPosition();
+        Vector3 cursorPos = GetMouseWorldPosition();
 
         eventBus.Raise<OnPlayerThrow>();
         yield return new WaitUntil(() => throwAnimEnded);
 
-        direction = Vector3.Normalize(mousePos - transform.position);
+        direction = Vector3.Normalize(cursorPos - transform.position);
 
-        collider.layer = noPlayerColLayer;
+        aircraftCollider.layer = noPlayerColLayer;
 
         Enable();
         Launch();

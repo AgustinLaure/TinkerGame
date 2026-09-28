@@ -5,6 +5,8 @@ public class PlayerPickUp : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private BoxCollider pickUpArea;
+    private PlayerInput playerInput;
+    private InputAction pickUpAction;
     private EventBus eventBus;
 
     [Header("Configs")]
@@ -14,12 +16,18 @@ public class PlayerPickUp : MonoBehaviour
 
     private Collider[] propColliders = new Collider[maxColliders];
 
-    private void Awake()
+    private void Start()
     {
-        eventBus = ServiceLocator.Instance.GetService<EventBus>();
+        ServiceLocator serviceLocator = ServiceLocator.Instance;
+        
+        eventBus = serviceLocator.GetService<EventBus>();
+
+        playerInput = serviceLocator.GetService<PlayerInput>();
+        pickUpAction = playerInput.actions["PickUp"];
+        pickUpAction.performed += OnPickUp;
     }
 
-    private void OnPickUp(InputValue value)
+    private void OnPickUp(InputAction.CallbackContext value)
     {
         if (Physics.CheckBox(pickUpArea.bounds.center, pickUpArea.bounds.extents, pickUpArea.transform.rotation, propMask))
         {
@@ -27,5 +35,10 @@ public class PlayerPickUp : MonoBehaviour
 
             eventBus.Raise<OnPlayerPickUp>(propColliders[0].GetComponentInParent<Prop>());
         }
+    }
+
+    private void OnDestroy()
+    {
+        pickUpAction.performed -= OnPickUp;
     }
 }

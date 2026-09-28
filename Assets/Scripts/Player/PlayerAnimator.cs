@@ -9,7 +9,7 @@ public class PlayerAnimator : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private PlayerController playerController;
     [SerializeField] private Rigidbody rb;
-    [SerializeField] private PlayerInput playerInput;
+    private PlayerInput playerInput;
     private InputAction moveAction;
 
     [Header("Config")]
@@ -96,7 +96,9 @@ public class PlayerAnimator : MonoBehaviour
 
     private void Start()
     {
-        eventBus = ServiceLocator.Instance.GetService<EventBus>();
+        ServiceLocator serviceLocator = ServiceLocator.Instance;
+        eventBus = serviceLocator.GetService<EventBus>();
+        playerInput = serviceLocator.GetService<PlayerInput>();
 
         moveAction = playerInput.actions["Move"];
 

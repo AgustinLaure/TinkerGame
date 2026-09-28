@@ -18,6 +18,12 @@ public class PlayerCraft : MonoBehaviour
     [Header("References")]
     [SerializeField] private OrigamiPool origamiPool;
     [SerializeField] private Transform origamiSpawnPointTRS;
+
+    private PlayerInput playerInput;
+    private InputAction toggleCraftAction;
+    private InputAction craftMovesAction;
+    private InputAction dropAction;
+
     private EventBus eventBus;
 
     [Header("Config")]
@@ -36,23 +42,30 @@ public class PlayerCraft : MonoBehaviour
     private int cachedMovesPointer = 0;
 
     private bool isCrafting = false;
-    bool isKeyDown = false;
-
 
     private void Awake()
     {
-        eventBus = ServiceLocator.Instance.GetService<EventBus>();
-
         recipes[0].moves = aicraftRecipe;
         recipes[0].type = typeof(Aircraft);
     }
 
     private void Start()
     {
+        ServiceLocator serviceLocator = ServiceLocator.Instance;
 
+        eventBus = serviceLocator.GetService<EventBus>();
+        playerInput = serviceLocator.GetService<PlayerInput>();
+
+        toggleCraftAction = playerInput.actions["ToggleCraft"];
+        craftMovesAction = playerInput.actions["CraftMoves"];
+        dropAction = playerInput.actions["Drop"];
+
+        toggleCraftAction.performed += OnToggleCraft;
+        craftMovesAction.performed += OnCraftMoves;
+        dropAction.performed += OnDrop;
     }
 
-    private void OnToggleCraft(InputValue value)
+    private void OnToggleCraft(InputAction.CallbackContext value)
     {
         if (enabled)
         {
@@ -76,46 +89,36 @@ public class PlayerCraft : MonoBehaviour
         cachedMovesPointer = 0;
     }
 
-    private void OnCraftMoves(InputValue value)
+    private void OnCraftMoves(InputAction.CallbackContext value)
     {
         if (isCrafting)
         {
-            Vector2 axis = value.Get<Vector2>();
+            Vector2 axis = value.ReadValue<Vector2>();
 
-            if (!isKeyDown)
+            Move move = Move.None;
+
+            if (axis.x > 0f)
             {
-                Move move = Move.None;
-
-                if (axis.x > 0f)
-                {
-                    move = Move.Right;
-                }
-                else if (axis.x < 0f)
-                {
-                    move = Move.Left;
-                }
-                else if (axis.y > 0f)
-                {
-                    move = Move.Up;
-                }
-                else if (axis.y < 0f)
-                {
-                    move = Move.Down;
-                }
-
-                isKeyDown = true;
-
-                AddMove(move);
+                move = Move.Right;
+            }
+            else if (axis.x < 0f)
+            {
+                move = Move.Left;
+            }
+            else if (axis.y > 0f)
+            {
+                move = Move.Up;
+            }
+            else if (axis.y < 0f)
+            {
+                move = Move.Down;
             }
 
-            if (axis == Vector2.zero)
-            {
-                isKeyDown = false;
-            }
+            AddMove(move);
         }
     }
 
-    private void OnDrop(InputValue value)
+    private void OnDrop(InputAction.CallbackContext value)
     {
         if (isCrafting)
         {
@@ -142,7 +145,6 @@ public class PlayerCraft : MonoBehaviour
                 eventBus.Raise<OnPlayerCraftedOrigami>(origami.GetComponent<Origami>());
 
                 isCrafting = false;
-                isKeyDown = false;
 
                 break;
             }
@@ -179,5 +181,12 @@ public class PlayerCraft : MonoBehaviour
         }
 
         return matches;
+    }
+
+    private void OnDestroy()
+    {
+        toggleCraftAction.performed -= OnToggleCraft;
+        craftMovesAction.performed -= OnCraftMoves;
+        dropAction.performed -= OnDrop;
     }
 }

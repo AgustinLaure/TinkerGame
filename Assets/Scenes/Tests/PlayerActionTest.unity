@@ -680,6 +680,10 @@ PrefabInstance:
       propertyPath: origamiPool
       value: 
       objectReference: {fileID: 2131853617}
+    - target: {fileID: 1119345959609679080, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: playerInput
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2455840751192353189, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
       propertyPath: triggerEnterEventTypeName
       value: OnPlayerDetectedLand
@@ -699,6 +703,14 @@ PrefabInstance:
     - target: {fileID: 4649881336701549939, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5144765716064407186, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: playerInput
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6182944734772050192, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
+      propertyPath: playerInput
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 9016435439561167862, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
       propertyPath: m_LocalPosition.x
@@ -740,7 +752,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7414174764866867545, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

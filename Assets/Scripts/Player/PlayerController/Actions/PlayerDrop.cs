@@ -6,24 +6,28 @@ public class PlayerDrop : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Transform dropPoint;
+    private PlayerInput playerInput;
+    private InputAction dropAction;
     private EventBus eventBus;
 
     private Prop currentProp = null;
 
-    private void Awake()
-    {
-
-    }
 
     private void Start()
     {
-        eventBus = ServiceLocator.Instance.GetService<EventBus>();
+        ServiceLocator serviceLocator = ServiceLocator.Instance;
+
+        eventBus = serviceLocator.GetService<EventBus>();
 
         eventBus.Subscribe<OnPlayerDropAnimFinished>((Action)HandlePlayerDropAnimFinish);
         eventBus.Subscribe<OnPlayerPickUp>((Action<OnPlayerPickUp>)HandlePlayerPickUp);
+
+        playerInput = serviceLocator.GetService<PlayerInput>();
+        dropAction = playerInput.actions["Drop"];
+        dropAction.performed += OnDrop;
     }
 
-    private void OnDrop(InputValue value)
+    private void OnDrop(InputAction.CallbackContext value)
     {
         if (currentProp != null)
         {
@@ -42,5 +46,10 @@ public class PlayerDrop : MonoBehaviour
         currentProp.Enable();
 
         currentProp = null;
+    }
+
+    private void OnDestroy()
+    {
+        dropAction.performed -= OnDrop;
     }
 }

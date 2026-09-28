@@ -10,9 +10,10 @@ public class PlayerJump : MonoBehaviour
     [SerializeField] private float jumpCooldown;
 
     [Header("References")]
-    [SerializeField] private PlayerInput playerInput;
     [SerializeField] private Rigidbody rb;
+    private PlayerInput playerInput;
     private EventBus eventBus;
+    private InputAction jumpAction;
 
     private ForceMode forceMode = ForceMode.Impulse;
 
@@ -25,7 +26,13 @@ public class PlayerJump : MonoBehaviour
 
     private void Start()
     {
-        eventBus = ServiceLocator.Instance.GetService<EventBus>();
+        ServiceLocator serviceLocator = ServiceLocator.Instance;
+        eventBus = serviceLocator.GetService<EventBus>();
+        playerInput = serviceLocator.GetService<PlayerInput>();
+
+        jumpAction = playerInput.actions["Jump"];
+
+        jumpAction.performed += OnJump;
     }
 
     private void FixedUpdate()
@@ -50,11 +57,16 @@ public class PlayerJump : MonoBehaviour
         jumpCoroutine = null;
     }
 
-    private void OnJump(InputValue value)
+    private void OnJump(InputAction.CallbackContext value)
     {
         if (jumpCoroutine == null && enabled == true)
         {
             jumpCoroutine = StartCoroutine(JumpCoroutine());
         }
+    }
+
+    private void OnDestroy()
+    {
+        jumpAction.performed -= OnJump;
     }
 }

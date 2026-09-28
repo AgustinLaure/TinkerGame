@@ -5,7 +5,6 @@ public class PlayerHorizontalMovement : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Transform baseTransform;
-    [SerializeField] private PlayerInput playerInput;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private CapsuleCollider legsCollider;
     [SerializeField] private PhysicsMaterial noFrictionMat;
@@ -26,14 +25,13 @@ public class PlayerHorizontalMovement : MonoBehaviour
     private readonly Quaternion facingLeftRotation = Quaternion.Euler(0f,0,0f);
     private readonly Quaternion facingRightRotation = Quaternion.Euler(0f,180f,0f);
 
-    private void Awake()
-    {
-        moveAction = playerInput.actions["Move"];
-    }
-
     private void Start()
     {
-        eventBus = ServiceLocator.Instance.GetService<EventBus>();
+        ServiceLocator serviceLocator = ServiceLocator.Instance;
+
+        eventBus = serviceLocator.GetService<EventBus>();
+
+        moveAction = serviceLocator.GetService<PlayerInput>().actions["Move"];
 
         originalLegsColliderMat = legsCollider.sharedMaterial;
     }
