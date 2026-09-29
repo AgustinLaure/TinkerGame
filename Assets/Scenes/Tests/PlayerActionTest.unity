@@ -755,22 +755,6 @@ PrefabInstance:
       propertyPath: origamiPool
       value: 
       objectReference: {fileID: 2131853617}
-    - target: {fileID: 442777173152098497, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-      propertyPath: 'aicraftRecipe.Array.data[0]'
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 442777173152098497, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-      propertyPath: 'aicraftRecipe.Array.data[1]'
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 442777173152098497, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-      propertyPath: 'aicraftRecipe.Array.data[2]'
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 442777173152098497, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
-      propertyPath: 'aicraftRecipe.Array.data[3]'
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 4453225154132744728, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
       propertyPath: m_Name
       value: Player
