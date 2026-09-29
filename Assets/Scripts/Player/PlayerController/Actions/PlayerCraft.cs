@@ -4,9 +4,9 @@ using System;
 
 public class PlayerCraft : MonoBehaviour
 {
-    private enum Move
+    public enum Move
     {
-        None,
+        None = -1,
         Up,
         Down,
         Left,
@@ -27,7 +27,7 @@ public class PlayerCraft : MonoBehaviour
     private EventBus eventBus;
 
     [Header("Config")]
-    [SerializeField] private const int maxPossibleMoves = 10;
+    [SerializeField] private const int maxPossibleMoves = 7;
     [SerializeField] private Move[] aicraftRecipe;
     [SerializeField] private Move[] frogRecipe;
 
@@ -77,10 +77,7 @@ public class PlayerCraft : MonoBehaviour
 
             eventBus.Raise<OnPlayerToggleCraft>(isCrafting);
 
-            if (isCrafting)
-            {
-                ResetCache();
-            }
+            ResetCache();
         }
     }
 
@@ -90,6 +87,9 @@ public class PlayerCraft : MonoBehaviour
         {
             cachedMoves[i] = Move.None;
         }
+
+        eventBus.Raise<OnPlayerUpdateCraftMoves>(cachedMoves);
+
         cachedMovesPointer = 0;
     }
 
@@ -149,10 +149,13 @@ public class PlayerCraft : MonoBehaviour
                 eventBus.Raise<OnPlayerCraftedOrigami>(origami.GetComponent<Origami>());
 
                 isCrafting = false;
+                ResetCache();
 
                 break;
             }
         }
+
+        eventBus.Raise<OnPlayerUpdateCraftMoves>(cachedMoves);
 
         return true;
     }
