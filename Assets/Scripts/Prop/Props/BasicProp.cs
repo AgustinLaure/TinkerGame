@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class RockProp : Prop
+public class BasicProp : Prop
 {
     [Header("References")]
     [SerializeField] private GameObject rendererObject;
