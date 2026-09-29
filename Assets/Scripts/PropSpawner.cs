@@ -27,20 +27,23 @@ public class PropSpawner : MonoBehaviour
 
     protected void Spawn(Quaternion rotation)
     {
-        if (isRandomDrop)
+        if (spawnPoints.Length > 0 && possibleDropPools.Length > 0 && possibleDropPools.Length == possibleDrops.Length && possibleDrops.Length > 0)
         {
-            SpawnProp(rotation, Random.Range(0, possibleDrops.Length), isRandomSpawnPoint);
-        }
-        else
-        {
-            dropIter++;
-
-            if (dropIter >= possibleDrops.Length)
+            if (isRandomDrop)
             {
-                dropIter = 0;
+                SpawnProp(rotation, Random.Range(0, possibleDrops.Length), isRandomSpawnPoint);
             }
+            else
+            {
+                dropIter++;
 
-            SpawnProp(rotation, dropIter, isRandomSpawnPoint);
+                if (dropIter >= possibleDrops.Length)
+                {
+                    dropIter = 0;
+                }
+
+                SpawnProp(rotation, dropIter, isRandomSpawnPoint);
+            }
         }
     }
 
