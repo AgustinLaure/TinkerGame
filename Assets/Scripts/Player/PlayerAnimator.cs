@@ -40,6 +40,8 @@ public class PlayerAnimator : MonoBehaviour
     private const string throwStateName = "Throw";
     private const string dropToIdleStateName = "DropToIdle";
     private const string throwToIdleStateName = "ThrowToIdle";
+    private const string idleToCraftStateName = "IdleToCraft";
+    private const string craftToIdleStateName = "CraftToIdle";
 
     private Dictionary<State, int> statesAnimatorHash = new Dictionary<State, int>
     {
@@ -57,6 +59,8 @@ public class PlayerAnimator : MonoBehaviour
         [State.Aim] = Animator.StringToHash(aimStateName),
         [State.Throw] = Animator.StringToHash(throwStateName),
         [State.ThrowToIdle] = Animator.StringToHash(throwToIdleStateName),
+        [State.IdleToCraft] = Animator.StringToHash(idleToCraftStateName),
+        [State.CraftToIdle] = Animator.StringToHash(craftToIdleStateName),
     };
 
     private int animatorStateHash = 0;
@@ -85,7 +89,10 @@ public class PlayerAnimator : MonoBehaviour
         Aim,
         Aiming,
         Throw,
-        ThrowToIdle
+        ThrowToIdle,
+        IdleToCraft,
+        Craft,
+        CraftToIdle
     }
 
     private void Awake()
@@ -109,6 +116,7 @@ public class PlayerAnimator : MonoBehaviour
         eventBus.Subscribe<OnPlayerDrop>((Action)idleState.OnDrop);
         eventBus.Subscribe<OnPlayerAim>((Action)idleState.OnAim);
         eventBus.Subscribe<OnPushPlayer>((Action<OnPushPlayer>)idleState.OnFall);
+        eventBus.Subscribe<OnPlayerToggleCraft>((Action<OnPlayerToggleCraft>)idleState.OnCraft);
 
         IdleToWalkState idleToWalkState = new IdleToWalkState(this);
         eventBus.Subscribe<OnPlayerJump>((Action)idleToWalkState.OnJump);
@@ -159,6 +167,14 @@ public class PlayerAnimator : MonoBehaviour
 
         ThrowToIdleState throwToIdleState = new ThrowToIdleState(this);
 
+        IdleToCraftState idleToCraftState = new IdleToCraftState(this);
+
+        CraftState craftState = new CraftState(this);
+        eventBus.Subscribe<OnPlayerToggleCraft>((Action<OnPlayerToggleCraft>)craftState.OnToggleCraft);
+        eventBus.Subscribe<OnPlayerCraftedOrigami>((Action<OnPlayerCraftedOrigami>)craftState.OnCraft);
+
+        CraftToIdle craftToIdleState = new CraftToIdle(this);
+
         Dictionary<Type, global::State> states = new Dictionary<Type, global::State>()
         {
             [typeof(IdleState)] = idleState,
@@ -176,7 +192,10 @@ public class PlayerAnimator : MonoBehaviour
             [typeof(AimState)] = aimState,
             [typeof(AimingState)] = aimingState,
             [typeof(ThrowState)] = throwState,
-            [typeof(ThrowToIdleState)] = throwToIdleState
+            [typeof(ThrowToIdleState)] = throwToIdleState,
+            [typeof(IdleToCraftState)] = idleToCraftState,
+            [typeof(CraftState)] = craftState,
+            [typeof(CraftToIdle)] = craftToIdleState
         };
 
         fsm = new FSM(states);
@@ -247,6 +266,11 @@ public class PlayerAnimator : MonoBehaviour
         public void OnFall(OnPushPlayer data)
         {
             playerAnimator.fsm.TryChange<IdleState>(typeof(FallState));
+        }
+
+        public void OnCraft(OnPlayerToggleCraft data)
+        {
+            playerAnimator.fsm.TryChange<IdleState>(typeof(IdleToCraftState));
         }
     }
 
@@ -494,9 +518,9 @@ public class PlayerAnimator : MonoBehaviour
     private class FallState : global::State
     {
         private PlayerAnimator playerAnimator;
-       //private float timer = timeToEndAnim;
-       //
-       //private const float timeToEndAnim = 0.05f;
+        //private float timer = timeToEndAnim;
+        //
+        //private const float timeToEndAnim = 0.05f;
 
         public FallState(PlayerAnimator playerAnimator)
         {
@@ -511,18 +535,18 @@ public class PlayerAnimator : MonoBehaviour
 
         public override void Update()
         {
-                if (!playerAnimator.playerController.GetIsOnAirState)
-                {
-                    playerAnimator.fsm.TryChange<FallState>(typeof(LandState));
-                }
+            if (!playerAnimator.playerController.GetIsOnAirState)
+            {
+                playerAnimator.fsm.TryChange<FallState>(typeof(LandState));
+            }
 
-           //if (timer < 0f)
-           //{
-           //}
-           //else
-           //{
-           //    timer -= Time.deltaTime;
-           //}
+            //if (timer < 0f)
+            //{
+            //}
+            //else
+            //{
+            //    timer -= Time.deltaTime;
+            //}
         }
 
         public override void Exit()
@@ -570,7 +594,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public void OnFall(OnPushPlayer data)
         {
-           //playerAnimator.fsm.TryChange<LandState>(typeof(FallState));
+            //playerAnimator.fsm.TryChange<LandState>(typeof(FallState));
         }
     }
 
@@ -613,7 +637,7 @@ public class PlayerAnimator : MonoBehaviour
 
         public void OnFall(OnPushPlayer data)
         {
-           // playerAnimator.fsm.TryChange<LandToIdleState>(typeof(FallState));
+            // playerAnimator.fsm.TryChange<LandToIdleState>(typeof(FallState));
         }
     }
 
@@ -848,6 +872,97 @@ public class PlayerAnimator : MonoBehaviour
         public override void Exit()
         {
 
+        }
+    }
+
+    private class IdleToCraftState : global::State
+    {
+        private PlayerAnimator playerAnimator;
+
+        public IdleToCraftState(PlayerAnimator playerAnimator)
+        {
+            this.playerAnimator = playerAnimator;
+        }
+
+        public override void Enter()
+        {
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.IdleToCraft);
+        }
+
+        public override void Update()
+        {
+            if (AnimationUtils.GetCurrentAnimationEnded(playerAnimator.animator, playerAnimator.statesAnimatorHash[State.IdleToCraft]))
+            {
+                playerAnimator.fsm.TryChange<IdleToCraftState>(typeof(CraftState));
+            }
+        }
+
+        public override void Exit()
+        {
+
+        }
+    }
+
+    private class CraftState : global::State
+    {
+        private PlayerAnimator playerAnimator;
+
+        public CraftState(PlayerAnimator playerAnimator)
+        {
+            this.playerAnimator = playerAnimator;
+        }
+
+        public override void Enter()
+        {
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.Craft);
+        }
+
+        public override void Update()
+        {
+
+        }
+
+        public override void Exit()
+        {
+
+        }
+
+        public void OnToggleCraft(OnPlayerToggleCraft data)
+        {
+            playerAnimator.fsm.TryChange<CraftState>(typeof(CraftToIdle));
+        }
+
+        public void OnCraft(OnPlayerCraftedOrigami data)
+        {
+            playerAnimator.fsm.TryChange<CraftState>(typeof(CraftToIdle));
+        }
+    }
+
+    private class CraftToIdle : global::State
+    {
+        private PlayerAnimator playerAnimator;
+
+        public CraftToIdle(PlayerAnimator playerAnimator)
+        {
+            this.playerAnimator = playerAnimator;
+        }
+
+        public override void Enter()
+        {
+            playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.CraftToIdle);
+        }
+
+        public override void Update()
+        {
+            if (AnimationUtils.GetCurrentAnimationEnded(playerAnimator.animator, playerAnimator.statesAnimatorHash[State.CraftToIdle]))
+            {
+                playerAnimator.fsm.TryChange<CraftToIdle>(typeof(IdleState));
+            }
+        }
+
+        public override void Exit()
+        {
+            playerAnimator.eventBus.Raise<OnPlayerStoppedCrafting>();
         }
     }
 }
