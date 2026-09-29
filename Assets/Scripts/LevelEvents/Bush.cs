@@ -5,9 +5,11 @@ public class Bush : PropSpawner
 {
     [Header("References")]
     [SerializeField] private Animator animator;
+    private EventBus eventBus;
 
     [Header("Config")]
     [SerializeField] private float shakeCooldown;
+    [SerializeField] private bool summonsSquirrel;
 
     private AreaCollider areaCollider;
 
@@ -22,6 +24,11 @@ public class Bush : PropSpawner
         areaCollider = GetComponent<AreaCollider>();
 
         areaCollider.OnColliderEntered += HandleAircraftCollision;
+    }
+
+    private void Start()
+    {
+        eventBus = ServiceLocator.Instance.GetService<EventBus>();
     }
 
     private void HandleAircraftCollision(Collision collision)
@@ -42,6 +49,11 @@ public class Bush : PropSpawner
         Quaternion randomRotation = Quaternion.Euler(0f, 0f, Random.Range(0, 361));
 
         Spawn(randomRotation);
+
+        if (summonsSquirrel)
+        {
+            eventBus.Raise<OnSummonSquirrel>();
+        }
 
         yield return new WaitForSeconds(shakeCooldown);
 
