@@ -10,8 +10,10 @@ public static class BootStrapper
 
     public static void Init()
     {
-        GameObject inputHandlerGO = Addressables.InstantiateAsync(inputHandlerRoute,Vector3.zero,Quaternion.identity).WaitForCompletion();
-        
+        GameObject inputHandlerPrefab = Resources.Load<GameObject>(inputHandlerRoute);
+
+        GameObject inputHandlerGO = Object.Instantiate(inputHandlerPrefab, Vector3.zero, Quaternion.identity);
+
         ServiceLocator serviceLocator = ServiceLocator.Instance;
 
         serviceLocator.AddService(inputHandlerGO.GetComponent<PlayerInput>());

@@ -84,6 +84,7 @@ public class PlayerController : MonoBehaviour
 
         eventBus.Subscribe<OnPlayerDropToIdleAnimFinished>((Action)actionLockState.OnDropFinished);
         eventBus.Subscribe<OnPlayerPickUpAnimFinished>((Action)actionLockState.OnPickUpFinished);
+        eventBus.Subscribe<OnPlayerStoppedCrafting>((Action)actionLockState.OnPlayerStoppedCrafting);
 
         CraftState craftState = new CraftState(this);
         craftState.actions = new List<MonoBehaviour>()
@@ -91,7 +92,7 @@ public class PlayerController : MonoBehaviour
             playerCraft
         };
 
-        eventBus.Subscribe<OnPlayerStoppedCrafting>((Action)craftState.OnStopCrafting);
+        eventBus.Subscribe<OnPlayerStopCrafting>((Action)craftState.OnStopCrafting);
 
         AimState aimState = new AimState(this);
         aimState.actions = new List<MonoBehaviour>()
@@ -311,6 +312,11 @@ public class PlayerController : MonoBehaviour
         {
             playerController.fsm.TryChange<ActionLockState>(typeof(IdleState));
         }
+
+        public void OnPlayerStoppedCrafting()
+        {
+            playerController.fsm.TryChange<ActionLockState>(typeof(IdleState));
+        }
     }
 
     private class CraftState : State
@@ -341,7 +347,7 @@ public class PlayerController : MonoBehaviour
         }
         public void OnStopCrafting()
         {
-            playerController.fsm.TryChange<CraftState>(typeof(IdleState));
+            playerController.fsm.TryChange<CraftState>(typeof(ActionLockState));
         }
     }
 

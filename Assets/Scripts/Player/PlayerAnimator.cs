@@ -135,6 +135,7 @@ public class PlayerAnimator : MonoBehaviour
         eventBus.Subscribe<OnPlayerPickUp>((Action<OnPlayerPickUp>)walkToIdleState.OnPickUp);
         eventBus.Subscribe<OnPlayerDrop>((Action)walkToIdleState.OnDrop);
         eventBus.Subscribe<OnPushPlayer>((Action<OnPushPlayer>)walkToIdleState.OnFall);
+        eventBus.Subscribe<OnPlayerToggleCraft>((Action<OnPlayerToggleCraft>)walkToIdleState.OnCraft);
 
         JumpState jumpState = new JumpState(this);
 
@@ -168,6 +169,8 @@ public class PlayerAnimator : MonoBehaviour
         ThrowToIdleState throwToIdleState = new ThrowToIdleState(this);
 
         IdleToCraftState idleToCraftState = new IdleToCraftState(this);
+        eventBus.Subscribe<OnPlayerToggleCraft>((Action<OnPlayerToggleCraft>)idleToCraftState.OnToggleCraft);
+        eventBus.Subscribe<OnPlayerCraftedOrigami>((Action<OnPlayerCraftedOrigami>)idleToCraftState.OnCraft);
 
         CraftState craftState = new CraftState(this);
         eventBus.Subscribe<OnPlayerToggleCraft>((Action<OnPlayerToggleCraft>)craftState.OnToggleCraft);
@@ -465,6 +468,11 @@ public class PlayerAnimator : MonoBehaviour
         public void OnFall(OnPushPlayer data)
         {
             //playerAnimator.fsm.TryChange<WalkToIdleState>(typeof(FallState));
+        }
+
+        public void OnCraft(OnPlayerToggleCraft data)
+        {
+            playerAnimator.fsm.TryChange<WalkToIdleState>(typeof(IdleToCraftState));
         }
     }
 
@@ -901,6 +909,19 @@ public class PlayerAnimator : MonoBehaviour
         {
 
         }
+
+        public void OnToggleCraft(OnPlayerToggleCraft data)
+        {
+            if (!data.isCrafting)
+            {
+                playerAnimator.fsm.TryChange<IdleToCraftState>(typeof(CraftToIdle));
+            }
+        }
+
+        public void OnCraft(OnPlayerCraftedOrigami data)
+        {
+            playerAnimator.fsm.TryChange<IdleToCraftState>(typeof(CraftToIdle));
+        }
     }
 
     private class CraftState : global::State
@@ -950,6 +971,8 @@ public class PlayerAnimator : MonoBehaviour
         public override void Enter()
         {
             playerAnimator.animator.SetInteger(playerAnimator.animatorStateHash, (int)State.CraftToIdle);
+
+            playerAnimator.eventBus.Raise<OnPlayerStopCrafting>();
         }
 
         public override void Update()
