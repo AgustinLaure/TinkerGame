@@ -91,8 +91,7 @@ public class PlayerController : MonoBehaviour
             playerCraft
         };
 
-        eventBus.Subscribe<OnPlayerToggleCraft>((Action<OnPlayerToggleCraft>)craftState.OnStopCrafting);
-        eventBus.Subscribe<OnPlayerCraftedOrigami>((Action<OnPlayerCraftedOrigami>)craftState.OnCrafted);
+        eventBus.Subscribe<OnPlayerStoppedCrafting>((Action)craftState.OnStopCrafting);
 
         AimState aimState = new AimState(this);
         aimState.actions = new List<MonoBehaviour>()
@@ -340,15 +339,7 @@ public class PlayerController : MonoBehaviour
         {
 
         }
-        public void OnStopCrafting(OnPlayerToggleCraft data)
-        {
-            if (!data.isCrafting)
-            {
-                playerController.fsm.TryChange<CraftState>(typeof(IdleState));
-            }
-        }
-
-        public void OnCrafted(OnPlayerCraftedOrigami data)
+        public void OnStopCrafting()
         {
             playerController.fsm.TryChange<CraftState>(typeof(IdleState));
         }
