@@ -12,6 +12,7 @@ public class MainMenuManager : MonoBehaviour
     [Header("Levels")]
     [SerializeField] private List<LevelData> levels;
 
+
     private void Start()
     {
         gameManager = ServiceLocator.Instance.GetService<GameManager>();
