@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerDrop playerDrop;
     [SerializeField] private PlayerUseProp playerUseProp;
     [SerializeField] private PlayerCraft playerCraft;
-    private PlayerInput playerInput;
+    private InputHandler inputHandle;
     private InputAction moveAction;
 
     private const float epsilon = 1e-05f;
@@ -42,7 +42,9 @@ public class PlayerController : MonoBehaviour
         eventBus.Subscribe<OnRotatePlayer>((Action<OnRotatePlayer>)HandlePlayerRotate);
         eventBus.Subscribe<OnPushPlayer>((Action<OnPushPlayer>)HandlePlayerPush);
 
-        moveAction = playerInput.actions["Move"];
+        inputHandle = serviceLocator.GetService<InputHandler>();
+
+        moveAction = inputHandle.playerInput.actions["Move"];
 
         IdleState idleState = new IdleState(this);
         idleState.actions = new List<MonoBehaviour>()

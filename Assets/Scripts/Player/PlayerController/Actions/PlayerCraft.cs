@@ -19,7 +19,7 @@ public class PlayerCraft : MonoBehaviour
     [SerializeField] private OrigamiPool origamiPool;
     [SerializeField] private Transform origamiSpawnPointTRS;
 
-    private PlayerInput playerInput;
+    private InputHandler inputHandle;
     private InputAction toggleCraftAction;
     private InputAction craftMovesAction;
     private InputAction dropAction;
@@ -58,11 +58,11 @@ public class PlayerCraft : MonoBehaviour
         ServiceLocator serviceLocator = ServiceLocator.Instance;
 
         eventBus = serviceLocator.GetService<EventBus>();
-        playerInput = serviceLocator.GetService<PlayerInput>();
+        inputHandle = serviceLocator.GetService<InputHandler>();
 
-        toggleCraftAction = playerInput.actions["ToggleCraft"];
-        craftMovesAction = playerInput.actions["CraftMoves"];
-        dropAction = playerInput.actions["Drop"];
+        toggleCraftAction = inputHandle.playerInput.actions["ToggleCraft"];
+        craftMovesAction = inputHandle.playerInput.actions["CraftMoves"];
+        dropAction = inputHandle.playerInput.actions["Drop"];
 
         toggleCraftAction.performed += OnToggleCraft;
         craftMovesAction.performed += OnCraftMoves;

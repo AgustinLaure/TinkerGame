@@ -31,7 +31,7 @@ public class PlayerHorizontalMovement : MonoBehaviour
 
         eventBus = serviceLocator.GetService<EventBus>();
 
-        moveAction = serviceLocator.GetService<PlayerInput>().actions["Move"];
+        moveAction = serviceLocator.GetService<InputHandler>().playerInput.actions["Move"];
 
         originalLegsColliderMat = legsCollider.sharedMaterial;
     }

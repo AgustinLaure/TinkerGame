@@ -5,13 +5,13 @@ public class PlayerUseProp : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private PlayerInventory inventory;
-    private PlayerInput playerInput;
+    private InputHandler inputHandle;
     private InputAction usePropAction;
 
     private void Start()
     {
-        playerInput = ServiceLocator.Instance.GetService<PlayerInput>();
-        usePropAction = playerInput.actions["UseProp"];
+        inputHandle = ServiceLocator.Instance.GetService<InputHandler>();
+        usePropAction = inputHandle.playerInput.actions["UseProp"];
 
         usePropAction.performed += OnUseProp;
     }

@@ -5,7 +5,7 @@ public class PlayerPickUp : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private BoxCollider pickUpArea;
-    private PlayerInput playerInput;
+    private InputHandler inputHandle;
     private InputAction pickUpAction;
     private EventBus eventBus;
 
@@ -22,8 +22,8 @@ public class PlayerPickUp : MonoBehaviour
         
         eventBus = serviceLocator.GetService<EventBus>();
 
-        playerInput = serviceLocator.GetService<PlayerInput>();
-        pickUpAction = playerInput.actions["PickUp"];
+        inputHandle = serviceLocator.GetService<InputHandler>();
+        pickUpAction = inputHandle.playerInput.actions["PickUp"];
         pickUpAction.performed += OnPickUp;
     }
 

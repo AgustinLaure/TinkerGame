@@ -8,7 +8,7 @@ public class PlayerDrop : MonoBehaviour
     [Header("References")]
     [SerializeField] private Transform dropPoint;
     [SerializeField] private PlayerInventory playerInventory;
-    private PlayerInput playerInput;
+    private InputHandler inputHandle;
     private InputAction dropAction;
     private EventBus eventBus;
 
@@ -25,8 +25,8 @@ public class PlayerDrop : MonoBehaviour
         eventBus.Subscribe<OnPlayerDropAnimFinished>((Action)HandlePlayerDropAnimFinish);
         eventBus.Subscribe<OnPlayerTryDrop>((Action)HandlePlayerTryDrop);
 
-        playerInput = serviceLocator.GetService<PlayerInput>();
-        dropAction = playerInput.actions["Drop"];
+        inputHandle = serviceLocator.GetService<InputHandler>();
+        dropAction = inputHandle.playerInput.actions["Drop"];
         dropAction.performed += OnDrop;
     }
 

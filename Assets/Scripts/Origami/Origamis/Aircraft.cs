@@ -7,7 +7,7 @@ public class Aircraft : Origami
 {
     [Header("References")]
 
-    private PlayerInput playerInput;
+    private InputHandler inputHandle;
     private InputAction cursorPosAction;
     private InputAction usePropAction;
 
@@ -57,9 +57,10 @@ public class Aircraft : Origami
 
         ServiceLocator serviceLocator = ServiceLocator.Instance;
 
-        playerInput = serviceLocator.GetService<PlayerInput>();
-        cursorPosAction = playerInput.actions["CursorPos"];
-        usePropAction = playerInput.actions["UseProp"];
+        inputHandle = serviceLocator.GetService<InputHandler>();
+
+        cursorPosAction = inputHandle.playerInput.actions["CursorPos"];
+        usePropAction = inputHandle.playerInput.actions["UseProp"];
 
         eventBus = serviceLocator.GetService<EventBus>();
         eventBus.Subscribe<OnPlayerAimAnimFinished>((Action)HandleAimAnimFinish);

@@ -11,7 +11,7 @@ public class PlayerJump : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private Rigidbody rb;
-    private PlayerInput playerInput;
+    private InputHandler inputHandle;
     private EventBus eventBus;
     private InputAction jumpAction;
 
@@ -28,9 +28,9 @@ public class PlayerJump : MonoBehaviour
     {
         ServiceLocator serviceLocator = ServiceLocator.Instance;
         eventBus = serviceLocator.GetService<EventBus>();
-        playerInput = serviceLocator.GetService<PlayerInput>();
+        inputHandle = serviceLocator.GetService<InputHandler>();
 
-        jumpAction = playerInput.actions["Jump"];
+        jumpAction = inputHandle.playerInput.actions["Jump"];
 
         jumpAction.performed += OnJump;
     }
