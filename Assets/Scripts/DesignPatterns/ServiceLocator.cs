@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VectorGraphics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -19,9 +20,11 @@ public class ServiceLocator : Singleton<ServiceLocator>
 
     public void AddServiceAsGameObject<T>(Func<object[], bool> function, object[] param = null) where T : MonoBehaviour
     {
-        GameObject gameObjectHandle = GameObject.Instantiate(new GameObject());
+        Debug.Log("Add GO");
+
+        GameObject gameObjectHandle = new GameObject();
         gameObjectHandle.name = typeof(T).ToString();
-        GameObject.DontDestroyOnLoad(gameObjectHandle);
+        UnityEngine.Object.DontDestroyOnLoad(gameObjectHandle);
 
         T service = gameObjectHandle.AddComponent<T>();
 
