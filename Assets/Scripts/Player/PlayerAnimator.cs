@@ -105,7 +105,7 @@ public class PlayerAnimator : MonoBehaviour
     {
         ServiceLocator serviceLocator = ServiceLocator.Instance;
         eventBus = serviceLocator.GetService<EventBus>();
-        playerInput = serviceLocator.GetService<PlayerInput>();
+        playerInput = serviceLocator.GetService<InputHandler>().playerInput;
 
         moveAction = playerInput.actions["Move"];
 

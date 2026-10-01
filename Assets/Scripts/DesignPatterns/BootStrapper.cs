@@ -4,19 +4,14 @@ using UnityEngine.InputSystem;
 
 public static class BootStrapper
 {
-    private const string inputHandlerRoute = "InputHandler";
+    private static ServiceLocator serviceLocator = ServiceLocator.Instance;
+
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-
     public static void Init()
     {
-        GameObject inputHandlerPrefab = Resources.Load<GameObject>(inputHandlerRoute);
+        serviceLocator.AddServiceAsGameObject<InputHandler>();
 
-        GameObject inputHandlerGO = Object.Instantiate(inputHandlerPrefab, Vector3.zero, Quaternion.identity);
-
-        ServiceLocator serviceLocator = ServiceLocator.Instance;
-
-        serviceLocator.AddService(inputHandlerGO.GetComponent<PlayerInput>());
         serviceLocator.AddService(new CompositePool());
         serviceLocator.AddService(new EventBus());
         serviceLocator.AddService(new GameManager());

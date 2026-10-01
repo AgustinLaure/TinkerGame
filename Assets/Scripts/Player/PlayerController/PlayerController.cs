@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour
         eventBus.Subscribe<OnRotatePlayer>((Action<OnRotatePlayer>)HandlePlayerRotate);
         eventBus.Subscribe<OnPushPlayer>((Action<OnPushPlayer>)HandlePlayerPush);
 
-        moveAction = serviceLocator.GetService<PlayerInput>().actions["Move"];
+        moveAction = playerInput.actions["Move"];
 
         IdleState idleState = new IdleState(this);
         idleState.actions = new List<MonoBehaviour>()
