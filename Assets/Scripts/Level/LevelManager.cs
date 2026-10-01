@@ -21,6 +21,14 @@ public class LevelManager : MonoBehaviour
         gameManager = ServiceLocator.Instance.GetService<GameManager>();
         gameManager.SetActiveLevelManager(this);
 
+        if (gameManager.levelManager == null)
+        {
+            Debug.LogWarning("Level should be started from gameManager!");
+            gameManager.SetActiveLevelManager(this);
+            Debug.LogWarning("Level data will be empty.");
+        }
+
+
         if (pausePanel != null) pausePanel.SetActive(false);
     }
 
