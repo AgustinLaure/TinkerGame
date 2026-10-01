@@ -10,7 +10,7 @@ public static class BootStrapper
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void Init()
     {
-        serviceLocator.AddServiceAsGameObject<InputHandler>();
+        serviceLocator.AddServiceAsGameObject<InputHandler>(null);
 
         serviceLocator.AddService(new CompositePool());
         serviceLocator.AddService(new EventBus());

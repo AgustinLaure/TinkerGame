@@ -16,20 +16,29 @@ public class ServiceLocator : Singleton<ServiceLocator>
         }
     }
 
-    public void AddServiceAsGameObject<T>(Func<object[], bool> function, object[] param) where T : MonoBehaviour
+    public void AddServiceAsGameObject<T>(Func<object[], bool> function, object[] param = null) where T : MonoBehaviour
     {
         GameObject gameObjectHandle = GameObject.Instantiate(new GameObject());
         gameObjectHandle.name = typeof(T).ToString();
         GameObject.DontDestroyOnLoad(gameObjectHandle);
-        
+
         T service = gameObjectHandle.AddComponent<T>();
+
+        AddService(service);
+
+        if (function == null) return;
+
+        if(param == null)
+        {
+            Debug.LogWarning($"{gameObjectHandle.name} had null params!");
+            return;
+        }
 
         if (function(param))
         {
             Debug.LogWarning($"{gameObjectHandle.name} couldn't run function");
         }
-
-        AddService(service);
+        return;
     }
 
     public void RemoveService<T>(T service) where T : class
