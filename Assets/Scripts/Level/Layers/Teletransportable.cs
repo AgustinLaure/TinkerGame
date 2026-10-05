@@ -23,7 +23,11 @@ public class Teletransportable : MonoBehaviour
         if (!telelportReady) return;
         telelportReady = false;
 
-        tpTransform.position = portal.target.transform.position;
+        Vector3 newPos = portal.target.transform.position;
+
+        newPos.y += tpTransform.position.y - portal.target.transform.position.y;
+
+        tpTransform.position = newPos;
 
         if (portal.flipSpeedOnTeleport)
         {
