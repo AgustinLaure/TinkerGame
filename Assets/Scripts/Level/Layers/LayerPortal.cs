@@ -4,7 +4,7 @@ using UnityEngine;
 public class LayerPortal : MonoBehaviour
 {
     [SerializeField]
-    public Transform target;
+    public PortalTarget target;
 
     private BoxCollider portalCollider;
 
@@ -18,11 +18,6 @@ public class LayerPortal : MonoBehaviour
     void Start()
     {
         portalCollider = GetComponent<BoxCollider>();
-    }
-
-    void Update()
-    {
-
     }
 
     void OnTriggerEnter(Collider other)
@@ -43,8 +38,6 @@ public class LayerPortal : MonoBehaviour
         Teletransportable tp = other.gameObject.GetComponent<Teletransportable>();
         if (!tp) return;
 
-        tp.EnterPortal(this);
-
-        eventBus.Raise<OnEnterLayerPortal>(target);
+        tp.ExitPortal(this);
     }
 }

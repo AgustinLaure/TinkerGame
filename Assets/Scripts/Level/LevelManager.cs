@@ -10,8 +10,6 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameObject playerSpawnPoint;
     [SerializeField] private GameObject pausePanel;
 
-    [SerializeField] public List<LayerController> layers = new List<LayerController>();
-
     private int currentLayer = 0;
 
     private bool isPaused = false;
