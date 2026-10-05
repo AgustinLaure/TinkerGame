@@ -670,6 +670,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LayerPortal
   target: {fileID: 1476896044}
+  flipSpeedOnTeleport: 1
 --- !u!65 &542573195
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -817,11 +818,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelManager
   playerSpawnPoint: {fileID: 0}
   pausePanel: {fileID: 1277559433}
-  layers:
-  - {fileID: 668569712}
-  - {fileID: 345309206}
-  - {fileID: 700962815}
-  - {fileID: 1009428109}
 --- !u!4 &839613721
 Transform:
   m_ObjectHideFlags: 0
@@ -1919,6 +1915,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LayerPortal
   target: {fileID: 1167901157}
+  flipSpeedOnTeleport: 1
 --- !u!65 &1658000091
 BoxCollider:
   m_ObjectHideFlags: 0
