@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class LevelManager : MonoBehaviour
 {
@@ -13,7 +15,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private Transform defaultCamPos;
     [SerializeField] private Camera cam;
 
-    [SerializeField] private List<LayerController> layers = new List<LayerController>();
+    private List<LayerController> layers = new List<LayerController>();
 
     private int currentLayer = 0;
 
@@ -37,11 +39,33 @@ public class LevelManager : MonoBehaviour
 
         if (pausePanel != null) pausePanel.SetActive(false);
     }
+    void Start()
+    {
+        StartCoroutine(LateStart());
+    }
 
+    IEnumerator LateStart()
+    {
+        yield return new WaitForFixedUpdate();
+
+        layers = layers.OrderBy(g => g.transform.position.z).ToList();
+
+        for (int i = 0; i < layers.Count; i++) 
+        {
+            layers[i].SetLayerIndex(i);
+            layers[i].RecalculateIndexes();
+        }
+    }
     private void OnDestroy()
     {
         Time.timeScale = 1.0f;
         if (gameManager != null) gameManager.SetActiveLevelManager(null);
+    }
+
+
+    public void RegisterLayer(LayerController layer)
+    {
+        layers.Add(layer);
     }
 
     public void TogglePause()
