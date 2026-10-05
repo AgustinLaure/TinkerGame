@@ -10,7 +10,6 @@ public class Teletransportable : MonoBehaviour
     public int LayerIndex { get { return layerIndex; } }
     public void SetLayerIndex(int newIndex) { layerIndex = newIndex; }
 
-
     private bool telelportReady = true;
 
     private void Start()
@@ -44,6 +43,8 @@ public class Teletransportable : MonoBehaviour
         }
 
         SetLayerIndex(portal.target.LayerIndex);
+
+        ServiceLocator.Instance.GetService<GameManager>().levelManager.SetCurrentLayer(portal.target.LayerIndex);
     }
 
     public void ExitPortal(LayerPortal portal)
