@@ -6,6 +6,10 @@ public class Teletransportable : MonoBehaviour
 
     [SerializeField] private Rigidbody rb;
 
+    private int layerIndex = -1;
+    public int LayerIndex { get { return layerIndex; } }
+    public void SetLayerIndex(int newIndex) { layerIndex = newIndex; }
+
 
     private bool telelportReady = true;
 
@@ -38,6 +42,8 @@ public class Teletransportable : MonoBehaviour
             }
             rb.linearVelocity *= new Vector2(-1.0f,1.0f);
         }
+
+        SetLayerIndex(portal.target.LayerIndex);
     }
 
     public void ExitPortal(LayerPortal portal)

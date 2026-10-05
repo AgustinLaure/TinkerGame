@@ -10,6 +10,11 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameObject playerSpawnPoint;
     [SerializeField] private GameObject pausePanel;
 
+    [SerializeField] private Transform defaultCamPos;
+    [SerializeField] private Camera cam;
+
+    [SerializeField] private List<LayerController> layers = new List<LayerController>();
+
     private int currentLayer = 0;
 
     private bool isPaused = false;

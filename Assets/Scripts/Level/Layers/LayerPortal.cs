@@ -12,6 +12,11 @@ public class LayerPortal : MonoBehaviour
 
     private EventBus eventBus;
 
+    private int layerIndex = -1;
+
+    public int LayerIndex { get { return layerIndex; } }
+    public void SetLayerIndex(int newIndex) { layerIndex = newIndex; }
+
     void Awake()
     {
         eventBus = ServiceLocator.Instance.GetService<EventBus>();
@@ -20,6 +25,8 @@ public class LayerPortal : MonoBehaviour
     void Start()
     {
         portalCollider = GetComponent<BoxCollider>();
+
+        target.AddPortal(this);
     }
 
     void OnTriggerEnter(Collider other)
