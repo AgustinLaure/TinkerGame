@@ -6,7 +6,7 @@ public class LayerPortal : MonoBehaviour
     [SerializeField]
     private Transform target;
 
-    private BoxCollider collider;
+    private BoxCollider portalCollider;
 
     private EventBus eventBus;
 
@@ -14,17 +14,26 @@ public class LayerPortal : MonoBehaviour
     {
         eventBus = ServiceLocator.Instance.GetService<EventBus>();
     }
+
     void Start()
     {
-        collider = GetComponent<BoxCollider>();
+        portalCollider = GetComponent<BoxCollider>();
     }
 
     void Update()
     {
 
     }
-    void OnPortalEnter()
+
+    public void OnPortalEnter(GameObject obj)
     {
         eventBus.Raise<OnEnterLayerPortal>(target);
+
+        obj.transform.position = target.position;
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        OnPortalEnter(other.gameObject);
     }
 }

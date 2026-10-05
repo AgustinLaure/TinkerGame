@@ -10,7 +10,9 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameObject playerSpawnPoint;
     [SerializeField] private GameObject pausePanel;
 
-    [SerializeField] public List<GameObject> layers = new List<GameObject>();
+    [SerializeField] public List<LayerController> layers = new List<LayerController>();
+
+    private int currentLayer = 0;
 
     private bool isPaused = false;
 
@@ -29,7 +31,6 @@ public class LevelManager : MonoBehaviour
             gameManager.SetActiveLevelManager(this);
             Debug.LogWarning("Level data will be empty.");
         }
-
 
         if (pausePanel != null) pausePanel.SetActive(false);
     }
