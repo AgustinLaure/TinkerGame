@@ -79,9 +79,7 @@ public class LevelManager : MonoBehaviour
     public void SetCurrentLayer(int layerIndex)
     {
         currentLayerIndex = layerIndex;
-        Debug.Log("camera from: " + cam.transform.position);
         cam.transform.position = layers[currentLayerIndex].camPos.position;
-        Debug.Log("camera to : " + cam.transform.position);
     }
 
     public void TogglePause()
