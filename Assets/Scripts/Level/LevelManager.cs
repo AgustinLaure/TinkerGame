@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelManager : MonoBehaviour
@@ -9,10 +10,11 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameObject playerSpawnPoint;
     [SerializeField] private GameObject pausePanel;
 
+    [SerializeField] public List<GameObject> layers = new List<GameObject>();
+
     private bool isPaused = false;
 
     public bool IsPaused { get { return isPaused; } } 
-
 
     void Awake()
     {
