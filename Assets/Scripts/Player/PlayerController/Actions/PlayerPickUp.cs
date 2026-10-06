@@ -19,7 +19,7 @@ public class PlayerPickUp : MonoBehaviour
     private void Start()
     {
         ServiceLocator serviceLocator = ServiceLocator.Instance;
-        
+
         eventBus = serviceLocator.GetService<EventBus>();
 
         inputHandle = serviceLocator.GetService<InputHandler>();
@@ -33,7 +33,12 @@ public class PlayerPickUp : MonoBehaviour
         {
             Physics.OverlapBoxNonAlloc(pickUpArea.bounds.center, pickUpArea.bounds.extents, propColliders, pickUpArea.transform.rotation, propMask);
 
-            eventBus.Raise<OnPlayerPickUp>(propColliders[0].GetComponentInParent<Prop>());
+            Prop prop = propColliders[0].GetComponentInParent<Prop>();
+
+            if (prop.GetIsPickable)
+            {
+                eventBus.Raise<OnPlayerPickUp>(prop);
+            }
         }
     }
 

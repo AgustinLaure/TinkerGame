@@ -41,4 +41,14 @@ public class BasicProp : Prop
         rendererObject.SetActive(false);
         colliderObject.SetActive(false);
     }
+
+    public void EnablePhysics()
+    {
+        EnableRigidBody(rb);
+    }
+
+    public void DisablePhysics()
+    {
+       DisableRigidBody(rb);
+    }
 }

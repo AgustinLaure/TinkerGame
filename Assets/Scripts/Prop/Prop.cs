@@ -2,6 +2,9 @@ using UnityEngine;
 
 public abstract class Prop : MonoBehaviour, IPickable
 {
+    private bool isPickable = true;
+
+    public bool GetIsPickable { get { return isPickable; } }
 
     public virtual void Action()
     {
