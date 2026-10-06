@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: LevelOne
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
   levelName: LevelOne
-  sceneName: LevelOneTest
+  sceneName: LevelOne
