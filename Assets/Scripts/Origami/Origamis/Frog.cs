@@ -119,6 +119,11 @@ public class Frog : Origami
             //    direction = Vector3.Normalize(collider.transform.position - transform.position);
             //}
 
+            Vector3 rawDirection = collider.transform.position - transform.position;
+            rawDirection.z = 0f;
+
+            direction = rawDirection.normalized;
+
             direction = Vector3.Normalize(collider.transform.position - transform.position);
 
             eventBus.Raise<OnPushPlayer>(direction * playerPushForce);

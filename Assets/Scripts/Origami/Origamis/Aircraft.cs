@@ -135,7 +135,9 @@ public class Aircraft : Origami
 
         Ray ray = mainCamera.ScreenPointToRay(screenPos);
 
-        if (levelPlane.Raycast(ray, out float enterDistance))
+        Plane currentLevelPlane = new Plane(Vector3.forward, new Vector3(0, 0, transform.position.z));
+
+        if (currentLevelPlane.Raycast(ray, out float enterDistance))
         {
             return ray.GetPoint(enterDistance);
         }
