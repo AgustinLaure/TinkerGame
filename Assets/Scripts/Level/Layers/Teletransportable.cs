@@ -28,7 +28,7 @@ public class Teletransportable : MonoBehaviour
 
         Vector3 newPos = portal.target.transform.position;
 
-        newPos.y += tpTransform.position.y - portal.target.transform.position.y;
+        newPos.y += tpTransform.position.y - portal.transform.position.y;
 
         tpTransform.position = newPos;
 
@@ -40,6 +40,16 @@ public class Teletransportable : MonoBehaviour
                 return;
             }
             rb.linearVelocity *= new Vector2(-1.0f,1.0f);
+        }
+
+        if (portal.multiplySpeedOnTeleport != 1.0f)
+        {
+            if (!rb)
+            {
+                Debug.LogError("tried speeding up teleportable but no rigidbody was found!");
+                return;
+            }
+            rb.linearVelocity *= portal.multiplySpeedOnTeleport;
         }
 
         SetLayerIndex(portal.target.LayerIndex);

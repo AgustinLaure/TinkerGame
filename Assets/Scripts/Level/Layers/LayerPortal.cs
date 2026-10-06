@@ -7,6 +7,7 @@ public class LayerPortal : MonoBehaviour
     public PortalTarget target;
 
     [SerializeField] public bool flipSpeedOnTeleport = true;
+    [SerializeField] public float multiplySpeedOnTeleport = 1.0f;
 
     private BoxCollider portalCollider;
 
