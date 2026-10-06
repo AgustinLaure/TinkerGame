@@ -73,6 +73,7 @@ public class LevelManager : MonoBehaviour
         if (perspectiveAction.action.WasPressedThisFrame()) // temp
         {
             cam.orthographic = !cam.orthographic;
+            cam.orthographicSize = 3;
         }
     }
 
