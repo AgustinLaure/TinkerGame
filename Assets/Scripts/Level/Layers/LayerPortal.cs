@@ -7,6 +7,7 @@ public class LayerPortal : MonoBehaviour
     public PortalTarget target;
 
     [SerializeField] public bool flipSpeedOnTeleport = true;
+    [SerializeField] public float multiplySpeedOnTeleport = 1.0f;
 
     private BoxCollider portalCollider;
 
@@ -34,7 +35,7 @@ public class LayerPortal : MonoBehaviour
         Teletransportable tp = other.gameObject.GetComponent<Teletransportable>();
         if (!tp)
         {
-            Debug.LogWarning("Non Teleportable object entered portal");
+            //Debug.LogWarning("Non Teleportable object entered portal");
             return;
         }
 
@@ -42,6 +43,7 @@ public class LayerPortal : MonoBehaviour
 
         eventBus.Raise<OnEnterLayerPortal>(target);
     }
+
     void OnTriggerExit(Collider other)
     {
         Teletransportable tp = other.gameObject.GetComponent<Teletransportable>();

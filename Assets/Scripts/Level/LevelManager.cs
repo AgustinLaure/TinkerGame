@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.InputSystem;
 
 public class LevelManager : MonoBehaviour
 {
@@ -23,7 +24,9 @@ public class LevelManager : MonoBehaviour
 
     private bool isPaused = false;
 
-    public bool IsPaused { get { return isPaused; } } 
+    public bool IsPaused { get { return isPaused; } }
+
+    [SerializeField] private InputActionReference perspectiveAction; // temp
 
     void Awake()
     {
@@ -65,6 +68,15 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (perspectiveAction.action.WasPressedThisFrame()) // temp
+        {
+            cam.orthographic = !cam.orthographic;
+            cam.orthographicSize = 3;
+        }
+    }
+
     private void OnDestroy()
     {
         Time.timeScale = 1.0f;
@@ -78,6 +90,21 @@ public class LevelManager : MonoBehaviour
 
     public void SetCurrentLayer(int layerIndex)
     {
+        if(layerIndex < 0 || layerIndex > layers.Count - 1)
+        {
+            Debug.LogError("Layer " + layerIndex + " is out of range!");
+            return;
+        }
+
+        if(currentLayerIndex > layerIndex)
+        {
+            layers[layerIndex].SetVisible(true);
+        }
+        else
+        {
+            layers[currentLayerIndex].SetVisible(false);
+        }
+
         currentLayerIndex = layerIndex;
         cam.transform.position = layers[currentLayerIndex].camPos.position;
     }

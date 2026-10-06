@@ -6,6 +6,9 @@ public class LayerController : MonoBehaviour
 {
     [SerializeField] public Transform camPos;
 
+    [SerializeField] public GameObject terrainObject;
+    [SerializeField] public GameObject foregroundObject;
+
     [SerializeField] private List<LayerPortal> portalList = new List<LayerPortal>();
     [SerializeField] private List<PortalTarget> portalTargets = new List<PortalTarget>();
 
@@ -31,6 +34,20 @@ public class LayerController : MonoBehaviour
 
             camPos = obj.transform;
         }
+
+        if (!terrainObject)
+        {
+            if (transform.Find("Terrain")) terrainObject = transform.Find("Terrain").gameObject;
+            if (!terrainObject)
+            {
+                Debug.LogError("No terrain has been found for this layer!");
+            }
+        }
+
+        if (!foregroundObject)
+        {
+            if (transform.Find("Foreground")) foregroundObject = transform.Find("Foreground").gameObject;
+        }
     }
 
     public void RecalculateIndexes()
@@ -43,6 +60,12 @@ public class LayerController : MonoBehaviour
         {
             target.SetLayerIndex(layerIndex);
         }
+    }
+
+    public void SetVisible(bool visible)
+    {
+        terrainObject.SetActive(visible);
+        foregroundObject.SetActive(visible);
     }
 
     void Update()
