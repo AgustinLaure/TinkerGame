@@ -98,11 +98,11 @@ public class LevelManager : MonoBehaviour
 
         if(currentLayerIndex > layerIndex)
         {
-            layers[layerIndex].terrainObject.SetActive(true);
+            layers[layerIndex].SetVisible(true);
         }
         else
         {
-            layers[currentLayerIndex].terrainObject.SetActive(false);
+            layers[currentLayerIndex].SetVisible(false);
         }
 
         currentLayerIndex = layerIndex;

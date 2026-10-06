@@ -63,7 +63,6 @@ public class Teletransportable : MonoBehaviour
 
     public void ExitPortal(LayerPortal portal)
     {
-        Debug.Log("ExitPortal");
         if (telelportReady) return;
         if (!reseting) StartCoroutine(ResetTeleport());
         reseting = true;
