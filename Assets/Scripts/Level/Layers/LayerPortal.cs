@@ -35,7 +35,7 @@ public class LayerPortal : MonoBehaviour
         Teletransportable tp = other.gameObject.GetComponent<Teletransportable>();
         if (!tp)
         {
-            Debug.LogWarning("Non Teleportable object entered portal");
+            //Debug.LogWarning("Non Teleportable object entered portal");
             return;
         }
 

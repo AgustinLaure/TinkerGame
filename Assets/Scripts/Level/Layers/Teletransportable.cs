@@ -28,7 +28,7 @@ public class Teletransportable : MonoBehaviour
 
         Vector3 newPos = portal.target.transform.position;
 
-        newPos.y += tpTransform.position.y - portal.transform.position.y;
+        newPos.y += portal.transform.position.y - tpTransform.position.y;
 
         tpTransform.position = newPos;
 

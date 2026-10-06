@@ -78,6 +78,21 @@ public class LevelManager : MonoBehaviour
 
     public void SetCurrentLayer(int layerIndex)
     {
+        if(layerIndex < 0 || layerIndex > layers.Count - 1)
+        {
+            Debug.LogError("Layer " + layerIndex + " is out of range!");
+            return;
+        }
+
+        if(currentLayerIndex > layerIndex)
+        {
+            layers[layerIndex].gameObject.SetActive(true);
+        }
+        else
+        {
+            layers[currentLayerIndex].gameObject.SetActive(false);
+        }
+
         currentLayerIndex = layerIndex;
         cam.transform.position = layers[currentLayerIndex].camPos.position;
     }
