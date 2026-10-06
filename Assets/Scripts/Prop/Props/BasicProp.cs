@@ -5,14 +5,25 @@ public class BasicProp : Prop
     [Header("References")]
     [SerializeField] private GameObject rendererObject;
     [SerializeField] private GameObject colliderObject;
-
+    private AreaCollider areaCollider;
     private Rigidbody rb;
 
     private const ForceMode pushForceMode = ForceMode.Impulse;
 
+    public AreaCollider GetAreaCollider { get { return areaCollider; } }
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+
+        if (gameObject.TryGetComponent<AreaCollider>(out AreaCollider collider))
+        {
+            areaCollider = collider;
+        }
+        else
+        {
+            areaCollider = gameObject.AddComponent<AreaCollider>();
+        }
     }
 
     public override void Enable()
@@ -26,12 +37,12 @@ public class BasicProp : Prop
     {
         if (push != Vector3.zero)
         {
-            rb.AddForce(push,pushForceMode);
+            rb.AddForce(push, pushForceMode);
         }
 
         if (torque != Vector3.zero)
         {
-            rb.AddTorque(torque,pushForceMode);
+            rb.AddTorque(torque, pushForceMode);
         }
     }
 
@@ -42,6 +53,16 @@ public class BasicProp : Prop
         colliderObject.SetActive(false);
     }
 
+    public void SetGravity(bool state)
+    {
+        rb.useGravity = state;
+    }
+
+    public void SetKinematic(bool state)
+    {
+        rb.isKinematic = state;
+    }
+
     public void EnablePhysics()
     {
         EnableRigidBody(rb);
@@ -49,6 +70,6 @@ public class BasicProp : Prop
 
     public void DisablePhysics()
     {
-       DisableRigidBody(rb);
+        DisableRigidBody(rb);
     }
 }

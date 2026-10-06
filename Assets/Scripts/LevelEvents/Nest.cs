@@ -27,11 +27,6 @@ public class Nest : MonoBehaviour
         eventBus = ServiceLocator.Instance.GetService<EventBus>();
     }
 
-    private void OnDestroy()
-    {
-        collectionArea.OnTriggerEntered -= HandleCollectionAreaTrigger;
-    }
-
     private IEnumerator AddStickCoroutine(BasicProp prop, int transformIndex)
     {
         prop.DisablePhysics();
@@ -77,5 +72,10 @@ public class Nest : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void OnDestroy()
+    {
+        collectionArea.OnTriggerEntered -= HandleCollectionAreaTrigger;
     }
 }

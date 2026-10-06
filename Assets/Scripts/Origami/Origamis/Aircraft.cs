@@ -36,7 +36,7 @@ public class Aircraft : Origami
     private readonly Quaternion facingRightRotation = Quaternion.Euler(0f, 180f, 0f);
     private Plane levelPlane = new Plane(Vector3.forward, Vector3.zero);
 
-    private const ForceMode launchForceMode = ForceMode.Impulse;
+    private const ForceMode launchForceMode = ForceMode.VelocityChange;
     private const ForceMode accelForceMode = ForceMode.Acceleration;
 
     private const string crumpleClipNameConst = "Crumple";

@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Stick
+  - Aircraft
   layers:
   - Default
   - TransparentFX
