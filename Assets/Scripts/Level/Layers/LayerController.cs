@@ -6,6 +6,8 @@ public class LayerController : MonoBehaviour
 {
     [SerializeField] public Transform camPos;
 
+    [SerializeField] public GameObject terrainObject;
+
     [SerializeField] private List<LayerPortal> portalList = new List<LayerPortal>();
     [SerializeField] private List<PortalTarget> portalTargets = new List<PortalTarget>();
 
@@ -30,6 +32,15 @@ public class LayerController : MonoBehaviour
             obj.transform.SetPositionAndRotation(levelManager.DefaultCamPos.position + this.transform.position, levelManager.DefaultCamPos.rotation);
 
             camPos = obj.transform;
+        }
+
+        if (!terrainObject)
+        {
+            terrainObject = transform.Find("Terrain").gameObject;
+            if (!terrainObject)
+            {
+                Debug.LogError("No terrain has been found for this layer!");
+            }
         }
     }
 

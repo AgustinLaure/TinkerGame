@@ -43,6 +43,7 @@ public class LayerPortal : MonoBehaviour
 
         eventBus.Raise<OnEnterLayerPortal>(target);
     }
+
     void OnTriggerExit(Collider other)
     {
         Teletransportable tp = other.gameObject.GetComponent<Teletransportable>();
