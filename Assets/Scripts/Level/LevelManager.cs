@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.InputSystem;
-using Unity.VisualScripting;
 
 public class LevelManager : MonoBehaviour
 {
@@ -28,11 +27,17 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] private List<LayerController> layers = new List<LayerController>();
 
+    [SerializeField] public Color defaultFadeColor = Color.clear;
+
     private bool isPaused = false;
 
     public bool IsPaused { get { return isPaused; } }
 
     [SerializeField] private InputActionReference perspectiveAction; // temp
+
+    public float GetCamTransitionProgress() {
+        return (camTransitionCurrentTimer/camTransitionTime); 
+    }
 
     void Awake()
     {
@@ -125,9 +130,9 @@ public class LevelManager : MonoBehaviour
 
     IEnumerator MoveCameraTransitionCorroutine()
     {
-        while (Vector3.Distance(cam.transform.position, layers[currentLayerIndex].camPos.position) > 0.01f)
+        while (GetCamTransitionProgress() < 1.0f)
         {
-            cam.transform.position = Vector3.Lerp(currentCamPos.position, layers[currentLayerIndex].camPos.position,camTransitionCurrentTimer/camTransitionTime);
+            cam.transform.position = Vector3.Lerp(currentCamPos.position, layers[currentLayerIndex].camPos.position,GetCamTransitionProgress());
             camTransitionCurrentTimer += Time.deltaTime;
             yield return null;
         }
