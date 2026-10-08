@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Unity.VectorGraphics;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class ServiceLocator : Singleton<ServiceLocator>
 {
@@ -18,6 +16,19 @@ public class ServiceLocator : Singleton<ServiceLocator>
         }
     }
 
+   public void AddServiceFromPrefab<T>(GameObject prefab, bool destroyOnLoad) where T : MonoBehaviour
+   {
+       GameObject gO = UnityEngine.Object.Instantiate(prefab);
+       gO.name = typeof(T).ToString();
+   
+       if (destroyOnLoad)
+       {
+           UnityEngine.Object.DontDestroyOnLoad(gO);
+       }
+   
+       AddService(gO.GetComponent<OrigamiPool>());
+   }
+
     public void AddServiceAsGameObject<T>(Func<object[], bool> function, object[] param = null) where T : MonoBehaviour
     {
         Debug.Log("Add GO");
@@ -32,7 +43,7 @@ public class ServiceLocator : Singleton<ServiceLocator>
 
         if (function == null) return;
 
-        if(param == null)
+        if (param == null)
         {
             Debug.LogWarning($"{gameObjectHandle.name} had null params!");
             return;
@@ -45,7 +56,8 @@ public class ServiceLocator : Singleton<ServiceLocator>
         return;
     }
 
-    public void RemoveService<T>(T service) where T : class
+
+    public void RemoveService<T>() where T : class
     {
         var type = typeof(T);
 

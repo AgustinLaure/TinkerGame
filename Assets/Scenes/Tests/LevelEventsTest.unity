@@ -453,7 +453,7 @@ PrefabInstance:
     - target: {fileID: 442777173152098497, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
       propertyPath: origamiPool
       value: 
-      objectReference: {fileID: 1026682470}
+      objectReference: {fileID: 0}
     - target: {fileID: 4453225154132744728, guid: 84b4ce79e40ce50408a197dc98d694ed, type: 3}
       propertyPath: m_Name
       value: Player
@@ -682,80 +682,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d24eb78c15c15534db3cb6dfe93de2b0, type: 3}
---- !u!1 &1026682469
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1026682473}
-  - component: {fileID: 1026682470}
-  - component: {fileID: 1026682472}
-  - component: {fileID: 1026682471}
-  m_Layer: 0
-  m_Name: OrigamiPool
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1026682470
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1026682469}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76a7c3824050d2d43876c26c852ebe97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::OrigamiPool
-  aicraftUnityPool: {fileID: 1026682472}
-  frogUnityPool: {fileID: 1026682471}
---- !u!114 &1026682471
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1026682469}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26699ae8bca0e42428dba711567a3684, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnityPool
-  prefab: {fileID: 4720311483658818617, guid: 1989f5dda6c009647adbd31d328437a0, type: 3}
---- !u!114 &1026682472
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1026682469}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26699ae8bca0e42428dba711567a3684, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnityPool
-  prefab: {fileID: 6942000788410757184, guid: b06c650e5b7ddba449cd83b147d0791f, type: 3}
---- !u!4 &1026682473
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1026682469}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.57414, y: 1.283, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1069037097
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1882,7 +1808,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 1545485429}
   - {fileID: 361054576}
-  - {fileID: 1026682473}
   - {fileID: 234249763}
   - {fileID: 495608554}
   - {fileID: 545865253}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.InputSystem;
+using Unity.VisualScripting;
 
 public class LevelManager : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameObject pausePanel;
 
     [SerializeField] private Transform defaultCamPos;
-     public Transform DefaultCamPos { get { return defaultCamPos; }}
+    public Transform DefaultCamPos { get { return defaultCamPos; } }
 
     [SerializeField] private Camera cam;
 
@@ -27,6 +28,8 @@ public class LevelManager : MonoBehaviour
     public bool IsPaused { get { return isPaused; } }
 
     [SerializeField] private InputActionReference perspectiveAction; // temp
+
+    private const string propPoolName = "PropPool";
 
     void Awake()
     {
@@ -61,7 +64,7 @@ public class LevelManager : MonoBehaviour
 
         layers = layers.OrderBy(g => g.transform.position.z).ToList();
 
-        for (int i = 0; i < layers.Count; i++) 
+        for (int i = 0; i < layers.Count; i++)
         {
             layers[i].SetLayerIndex(i);
             layers[i].RecalculateIndexes();
@@ -90,13 +93,13 @@ public class LevelManager : MonoBehaviour
 
     public void SetCurrentLayer(int layerIndex)
     {
-        if(layerIndex < 0 || layerIndex > layers.Count - 1)
+        if (layerIndex < 0 || layerIndex > layers.Count - 1)
         {
             Debug.LogError("Layer " + layerIndex + " is out of range!");
             return;
         }
 
-        if(currentLayerIndex > layerIndex)
+        if (currentLayerIndex > layerIndex)
         {
             layers[layerIndex].SetVisible(true);
         }
@@ -112,10 +115,10 @@ public class LevelManager : MonoBehaviour
     public void TogglePause()
     {
         isPaused = !isPaused;
-        Time.timeScale = isPaused ? 0.0f : 1.0f ;
+        Time.timeScale = isPaused ? 0.0f : 1.0f;
         eventBus.Raise<OnPause>(IsPaused);
         if (pausePanel != null) pausePanel.SetActive(IsPaused);
-        Debug.Log("Game is " + (IsPaused? "Unp" : "P") + "aused");
+        Debug.Log("Game is " + (IsPaused ? "Unp" : "P") + "aused");
     }
 
     public void OnWin()
