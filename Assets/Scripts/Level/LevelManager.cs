@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.InputSystem;
+using Unity.VisualScripting;
 
 public class LevelManager : MonoBehaviour
 {
@@ -14,6 +15,11 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameObject pausePanel;
 
     [SerializeField] private Transform defaultCamPos;
+    [SerializeField] private Transform currentCamPos;
+
+    [SerializeField] private static float camTransitionTime = 1.0f;
+    [SerializeField] private float camTransitionCurrentTimer = 0.0f;
+
      public Transform DefaultCamPos { get { return defaultCamPos; }}
 
     [SerializeField] private Camera cam;
@@ -106,7 +112,25 @@ public class LevelManager : MonoBehaviour
         }
 
         currentLayerIndex = layerIndex;
-        cam.transform.position = layers[currentLayerIndex].camPos.position;
+
+        MoveCameraTransition();
+    }
+
+    void MoveCameraTransition()
+    {
+        currentCamPos = cam.transform;
+        camTransitionCurrentTimer = 0.0f;
+        StartCoroutine(MoveCameraTransitionCorroutine());
+    }
+
+    IEnumerator MoveCameraTransitionCorroutine()
+    {
+        while (Vector3.Distance(cam.transform.position, layers[currentLayerIndex].camPos.position) > 0.01f)
+        {
+            cam.transform.position = Vector3.Lerp(currentCamPos.position, layers[currentLayerIndex].camPos.position,camTransitionCurrentTimer/camTransitionTime);
+            camTransitionCurrentTimer += Time.deltaTime;
+            yield return null;
+        }
     }
 
     public void TogglePause()
