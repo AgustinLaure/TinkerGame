@@ -16,8 +16,9 @@ public class PlayerCraft : MonoBehaviour
     private const int maxRecipes = 2;
 
     [Header("References")]
-    [SerializeField] private OrigamiPool origamiPool;
     [SerializeField] private Transform origamiSpawnPointTRS;
+    private OrigamiPool origamiPool;
+    private ServiceLocator serviceLocator;
 
     private InputHandler inputHandle;
     private InputAction toggleCraftAction;
@@ -44,6 +45,8 @@ public class PlayerCraft : MonoBehaviour
 
     private bool isCrafting = false;
 
+    private static string origamiPoolName = "OrigamiPool";
+
     private void Awake()
     {
         recipes[0].moves = aicraftRecipe;
@@ -55,7 +58,11 @@ public class PlayerCraft : MonoBehaviour
 
     private void Start()
     {
-        ServiceLocator serviceLocator = ServiceLocator.Instance;
+        serviceLocator = ServiceLocator.Instance;
+
+        serviceLocator.AddServiceFromPrefab<OrigamiPool>(Resources.Load<GameObject>(origamiPoolName), false);
+
+        origamiPool = serviceLocator.GetService<OrigamiPool>();
 
         eventBus = serviceLocator.GetService<EventBus>();
         inputHandle = serviceLocator.GetService<InputHandler>();
@@ -63,7 +70,7 @@ public class PlayerCraft : MonoBehaviour
         toggleCraftAction = inputHandle.playerInput.actions["ToggleCraft"];
         craftMovesAction = inputHandle.playerInput.actions["CraftMoves"];
         dropAction = inputHandle.playerInput.actions["Drop"];
-
+        
         toggleCraftAction.performed += OnToggleCraft;
         craftMovesAction.performed += OnCraftMoves;
         dropAction.performed += OnDrop;
@@ -192,6 +199,8 @@ public class PlayerCraft : MonoBehaviour
 
     private void OnDestroy()
     {
+        serviceLocator.RemoveService<OrigamiPool>();
+
         toggleCraftAction.performed -= OnToggleCraft;
         craftMovesAction.performed -= OnCraftMoves;
         dropAction.performed -= OnDrop;
