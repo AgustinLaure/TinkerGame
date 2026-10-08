@@ -15,7 +15,12 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameObject pausePanel;
 
     [SerializeField] private Transform defaultCamPos;
-    public Transform DefaultCamPos { get { return defaultCamPos; } }
+    [SerializeField] private Transform currentCamPos;
+
+    [SerializeField] private static float camTransitionTime = 1.0f;
+    [SerializeField] private float camTransitionCurrentTimer = 0.0f;
+
+     public Transform DefaultCamPos { get { return defaultCamPos; }}
 
     [SerializeField] private Camera cam;
 
@@ -23,13 +28,17 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] private List<LayerController> layers = new List<LayerController>();
 
+    [SerializeField] public Color defaultFadeColor = Color.clear;
+
     private bool isPaused = false;
 
     public bool IsPaused { get { return isPaused; } }
 
     [SerializeField] private InputActionReference perspectiveAction; // temp
 
-    private const string propPoolName = "PropPool";
+    public float GetCamTransitionProgress() {
+        return (camTransitionCurrentTimer/camTransitionTime); 
+    }
 
     void Awake()
     {
@@ -109,7 +118,25 @@ public class LevelManager : MonoBehaviour
         }
 
         currentLayerIndex = layerIndex;
-        cam.transform.position = layers[currentLayerIndex].camPos.position;
+
+        MoveCameraTransition();
+    }
+
+    void MoveCameraTransition()
+    {
+        currentCamPos = cam.transform;
+        camTransitionCurrentTimer = 0.0f;
+        StartCoroutine(MoveCameraTransitionCorroutine());
+    }
+
+    IEnumerator MoveCameraTransitionCorroutine()
+    {
+        while (GetCamTransitionProgress() < 1.0f)
+        {
+            cam.transform.position = Vector3.Lerp(currentCamPos.position, layers[currentLayerIndex].camPos.position,GetCamTransitionProgress());
+            camTransitionCurrentTimer += Time.deltaTime;
+            yield return null;
+        }
     }
 
     public void TogglePause()

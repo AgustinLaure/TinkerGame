@@ -1,5 +1,5 @@
+using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class LayerController : MonoBehaviour
@@ -8,6 +8,10 @@ public class LayerController : MonoBehaviour
 
     [SerializeField] public GameObject terrainObject;
     [SerializeField] public GameObject foregroundObject;
+    [SerializeField] public SpriteRenderer fadeLayerSprite;
+
+    [SerializeField] public bool overrideFadeColor;
+    [SerializeField] public Color fadeColor;
 
     [SerializeField] private List<LayerPortal> portalList = new List<LayerPortal>();
     [SerializeField] private List<PortalTarget> portalTargets = new List<PortalTarget>();
@@ -48,6 +52,12 @@ public class LayerController : MonoBehaviour
         {
             if (transform.Find("Foreground")) foregroundObject = transform.Find("Foreground").gameObject;
         }
+
+        if(!overrideFadeColor)
+        {
+            fadeColor = levelManager.defaultFadeColor;
+            fadeLayerSprite.color = fadeColor;
+        }
     }
 
     public void RecalculateIndexes()
@@ -64,8 +74,28 @@ public class LayerController : MonoBehaviour
 
     public void SetVisible(bool visible)
     {
-        terrainObject.SetActive(visible);
-        foregroundObject.SetActive(visible);
+        StartCoroutine(FadeCorroutine(visible));
+    }
+
+    IEnumerator FadeCorroutine(bool visible)
+    {
+        float alpha = 0.0f;
+
+        float progress = 0.0f;
+
+        Debug.Log("FadeColor alpha " + fadeColor.a);
+        
+        while (progress < 1.0f)
+        {
+            alpha = Mathf.Lerp(0.0f,fadeColor.a, progress);
+            progress += Time.deltaTime;
+            Debug.Log("Alpha " + alpha + " progress: " + progress);
+
+            fadeLayerSprite.color = new Color(fadeLayerSprite.color.r, fadeLayerSprite.color.g, fadeLayerSprite.color.b, (visible ? alpha : (1.0f - alpha)));
+        }
+        
+
+        yield return null;
     }
 
     void Update()
