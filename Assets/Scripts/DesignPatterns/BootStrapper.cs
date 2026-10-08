@@ -1,18 +1,13 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 
 public static class BootStrapper
 {
-    private static ServiceLocator serviceLocator = ServiceLocator.Instance;
-
-
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+
     public static void Init()
     {
-        serviceLocator.AddService(new CompositePool());
-        serviceLocator.AddService(new EventBus());
-
-        serviceLocator.AddServiceAsGameObject<InputHandler>(null);
-        serviceLocator.AddServiceAsGameObject<GameManager>(null);
+        ServiceLocator.Instance.AddService(new CompositePool());
+        ServiceLocator.Instance.AddService(new EventBus());
     }
 }
