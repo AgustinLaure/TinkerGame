@@ -1,0 +1,48 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public class UnityPool : MonoBehaviour
+{
+    [SerializeField] private GameObject prefab;
+    private Stack<GameObject> stack;
+
+    private void Awake()
+    {
+        stack = new Stack<GameObject>();
+    }
+    public GameObject GetItem()
+    {
+        if (stack.Count > 0)
+        {
+            GameObject item = stack.Pop();
+            item.SetActive(true);
+
+            return item;
+        }
+        else
+        {
+            return Instantiate(prefab);
+        }
+    }
+
+    public GameObject GetItem(Vector3 position, Quaternion rotation, Transform parent)
+    {
+        if (stack.Count > 0)
+        {
+            GameObject item = stack.Pop();
+            item.SetActive(true);
+
+            return item;
+        }
+        else
+        {
+            return Instantiate(prefab, position, rotation, parent);
+        }
+    }
+
+    public void ReturnItem(GameObject item)
+    {
+        item.SetActive(false);
+        stack.Push(item);
+    }
+}

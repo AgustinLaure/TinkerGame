@@ -16,7 +16,48 @@ public class ServiceLocator : Singleton<ServiceLocator>
         }
     }
 
-    public void RemoveService<T>(T service) where T : class
+   public void AddServiceFromPrefab<T>(GameObject prefab, bool destroyOnLoad) where T : MonoBehaviour
+   {
+       GameObject gO = UnityEngine.Object.Instantiate(prefab);
+       gO.name = typeof(T).ToString();
+   
+       if (destroyOnLoad)
+       {
+           UnityEngine.Object.DontDestroyOnLoad(gO);
+       }
+   
+       AddService(gO.GetComponent<OrigamiPool>());
+   }
+
+    public void AddServiceAsGameObject<T>(Func<object[], bool> function, object[] param = null) where T : MonoBehaviour
+    {
+        Debug.Log("Add GO");
+
+        GameObject gameObjectHandle = new GameObject();
+        gameObjectHandle.name = typeof(T).ToString();
+        UnityEngine.Object.DontDestroyOnLoad(gameObjectHandle);
+
+        T service = gameObjectHandle.AddComponent<T>();
+
+        AddService(service);
+
+        if (function == null) return;
+
+        if (param == null)
+        {
+            Debug.LogWarning($"{gameObjectHandle.name} had null params!");
+            return;
+        }
+
+        if (function(param))
+        {
+            Debug.LogWarning($"{gameObjectHandle.name} couldn't run function");
+        }
+        return;
+    }
+
+
+    public void RemoveService<T>() where T : class
     {
         var type = typeof(T);
 

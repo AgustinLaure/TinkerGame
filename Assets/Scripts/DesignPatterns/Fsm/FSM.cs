@@ -1,13 +1,21 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class FSM
 {
-    private IState currentState;
+    private State currentState;
 
-    private Dictionary<Type, IState> statesDictionary = new Dictionary<Type, IState>();
+    private Dictionary<Type, State> statesDictionary = new Dictionary<Type, State>();
 
-    public FSM(Dictionary<Type, IState> states)
+    public State GetCurrentState { get { return currentState; } }
+
+    public FSM(Dictionary<Type, State> states, List<MonoBehaviour> actions)
+    {
+        statesDictionary = states;
+    }
+
+    public FSM(Dictionary<Type, State> states)
     {
         statesDictionary = states;
     }
@@ -19,16 +27,60 @@ public class FSM
 
     public void SetInitialState(Type initialState)
     {
-      statesDictionary.TryGetValue(initialState, out currentState);
+        statesDictionary.TryGetValue(initialState, out currentState);
         currentState?.Enter();
+
+        SetActionsState(currentState.actions, true);
+
     }
-    public void TryChange<T>(Type toState) where T : IState
+    public void TryChange<T>(Type toState) where T : State
     {
         if (currentState is T)
         {
             currentState?.Exit();
-            statesDictionary.TryGetValue(toState, out currentState);
+
+            State nextState;
+
+            statesDictionary.TryGetValue(toState, out nextState);
+
+            SetNonMatchingActionsState(currentState.actions, nextState.actions);
+
+            currentState = nextState;
+
             currentState?.Enter();
+        }
+    }
+
+    private void SetActionsState(List<MonoBehaviour> actions, bool state)
+    {
+        if (actions != null)
+        {
+            foreach (MonoBehaviour action in actions)
+            {
+                action.enabled = state;
+            }
+        }
+    }
+
+    private void SetNonMatchingActionsState(List<MonoBehaviour> prevActions, List<MonoBehaviour> nextActions)
+    {
+        if (prevActions != null && nextActions != null)
+        {
+            foreach (MonoBehaviour prevAction in prevActions)
+            {
+                if (!nextActions.Contains(prevAction))
+                {
+                    prevAction.enabled = false;
+                }
+            }
+
+            foreach (MonoBehaviour nextAction in nextActions)
+            {
+                if (!prevActions.Contains(nextAction))
+                {
+                    nextAction.enabled = true;
+                }
+            }
         }
     }
 }

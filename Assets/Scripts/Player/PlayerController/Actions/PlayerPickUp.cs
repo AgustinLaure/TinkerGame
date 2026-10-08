@@ -1,0 +1,49 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class PlayerPickUp : MonoBehaviour
+{
+    [Header("References")]
+    [SerializeField] private BoxCollider pickUpArea;
+    private InputHandler inputHandle;
+    private InputAction pickUpAction;
+    private EventBus eventBus;
+
+    [Header("Configs")]
+    [SerializeField] private LayerMask propMask;
+
+    private const int maxColliders = 20;
+
+    private Collider[] propColliders = new Collider[maxColliders];
+
+    private void Start()
+    {
+        ServiceLocator serviceLocator = ServiceLocator.Instance;
+
+        eventBus = serviceLocator.GetService<EventBus>();
+
+        inputHandle = serviceLocator.GetService<InputHandler>();
+        pickUpAction = inputHandle.playerInput.actions["PickUp"];
+        pickUpAction.performed += OnPickUp;
+    }
+
+    private void OnPickUp(InputAction.CallbackContext value)
+    {
+        if (Physics.CheckBox(pickUpArea.bounds.center, pickUpArea.bounds.extents, pickUpArea.transform.rotation, propMask))
+        {
+            Physics.OverlapBoxNonAlloc(pickUpArea.bounds.center, pickUpArea.bounds.extents, propColliders, pickUpArea.transform.rotation, propMask);
+
+            Prop prop = propColliders[0].GetComponentInParent<Prop>();
+
+            if (prop.GetIsPickable)
+            {
+                eventBus.Raise<OnPlayerPickUp>(prop);
+            }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        pickUpAction.performed -= OnPickUp;
+    }
+}
